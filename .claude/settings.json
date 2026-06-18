@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(docker *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"TDD RULES (non-negotiable):\\n1. RED FIRST — write a failing test before any implementation. If the test passes before implementation exists, the test is wrong.\\n2. ONE TEST AT A TIME — write one failing test, make it green, then move to the next.\\n3. MINIMUM IMPLEMENTATION — make the test pass with the simplest possible code. No untested code.\\n4. REFACTOR ONLY ON GREEN — never refactor on red.\\n5. NO \\`any\\` TYPES — TypeScript strict mode is on. Stop and type it properly.\\n6. COVERAGE GATES — Lines ≥ 80%, Functions ≥ 80%, Branches ≥ 70%.\\n7. TESTS NEXT TO SOURCE — src/routes/foo.ts → src/routes/foo.test.ts.\\n8. REAL TEST DB — no mocking Prisma. Use DATABASE_URL_TEST.\\n9. FACTORY FUNCTIONS — use createTestFirm(), createTestClient(), etc. No static fixtures.\\n10. MOCK ONLY EXTERNAL SERVICES — S3, Resend, Stripe. Never mock Prisma or your own services.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}
