@@ -1,4 +1,7 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
+// Client-side calls go through the Next.js rewrite proxy (/api-proxy → real
+// API). This keeps everything same-origin so the web-domain cookie is
+// forwarded automatically — no cross-site cookie headaches.
+const API_URL = '/api-proxy'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {

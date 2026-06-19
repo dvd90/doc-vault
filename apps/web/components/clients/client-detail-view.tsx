@@ -45,7 +45,7 @@ export function ClientDetailView({
   const [reminding, setReminding] = useState(false)
   const [applyingId, setApplyingId] = useState<string | null>(null)
 
-  const portalUrl = `${process.env.NEXT_PUBLIC_API_URL?.replace(':4000', ':3000') ?? 'http://localhost:3000'}/portal/${client.portalToken}`
+  const portalUrl = `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/portal/${client.portalToken}`
 
   const requiredItems = client.items.filter((i) => i.required)
   const completedRequired = requiredItems.filter((i) => i.completedAt !== null)
