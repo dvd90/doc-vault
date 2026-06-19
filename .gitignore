@@ -5,4 +5,5 @@ dist/
 .env
 apps/api/.env.test
 apps/api/node_modules/
-
+apps/web/.next/
+apps/web/node_modules/
