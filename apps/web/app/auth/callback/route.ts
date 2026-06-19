@@ -8,10 +8,10 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
 
   if (!token) {
-    return NextResponse.redirect(new URL('/login?error=missing_token', req.url))
+    return NextResponse.redirect(new URL('/login?error=missing_token', req.nextUrl))
   }
 
-  const res = NextResponse.redirect(new URL('/dashboard', req.url))
+  const res = NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   res.cookies.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
