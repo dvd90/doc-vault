@@ -233,12 +233,12 @@ function HeroMockup() {
             <div className="h-full w-1/2 rounded-full bg-gradient-to-r from-blue-500 to-violet-500" />
           </div>
         </div>
+      </div>
 
-        {/* Notification badge */}
-        <div className="absolute -right-3 -top-3 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-1 text-xs font-bold text-white shadow-lg shadow-emerald-500/30">
-          <Bell className="h-3 w-3" />
-          New upload!
-        </div>
+      {/* Notification badge — sits outside the card so it isn't clipped by overflow-hidden */}
+      <div className="absolute -right-3 -top-3 z-10 flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/30">
+        <Bell className="h-3 w-3 shrink-0" />
+        New upload!
       </div>
     </div>
   )
