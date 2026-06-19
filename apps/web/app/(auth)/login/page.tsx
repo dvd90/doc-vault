@@ -32,8 +32,8 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
               Continue with
             </p>
 
-            <a href={loginUrl()} className="block">
-              <Button variant="outline" className="w-full h-11 gap-2.5" size="lg">
+            <Button asChild variant="outline" className="w-full h-11 gap-2.5" size="lg">
+              <a href={loginUrl()}>
                 <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -52,9 +52,9 @@ export default function LoginPage({ searchParams }: { searchParams: { error?: st
                     fill="#EA4335"
                   />
                 </svg>
-                Google
-              </Button>
-            </a>
+                Continue with Google
+              </a>
+            </Button>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

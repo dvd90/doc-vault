@@ -7,11 +7,18 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
 
+  // Railway reverse-proxies to localhost:PORT, so req.nextUrl.origin is often
+  // "localhost:8080". Read the forwarded headers Railway sets to get the real
+  // public origin, falling back to req.nextUrl.origin for local dev.
+  const fwdHost = req.headers.get('x-forwarded-host')
+  const fwdProto = req.headers.get('x-forwarded-proto') ?? 'https'
+  const origin = fwdHost ? `${fwdProto}://${fwdHost}` : req.nextUrl.origin
+
   if (!token) {
-    return NextResponse.redirect(new URL('/login?error=missing_token', req.nextUrl))
+    return NextResponse.redirect(`${origin}/login?error=missing_token`)
   }
 
-  const res = NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  const res = NextResponse.redirect(`${origin}/dashboard`)
   res.cookies.set('token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
