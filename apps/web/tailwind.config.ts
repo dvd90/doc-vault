@@ -59,6 +59,7 @@ const config: Config = {
         'fade-up': 'fade-up 0.7s ease-out both',
         float: 'float 6s ease-in-out infinite',
         'gradient-pan': 'gradient-pan 8s ease infinite',
+        blob: 'blob 12s ease-in-out infinite',
       },
     },
   },
