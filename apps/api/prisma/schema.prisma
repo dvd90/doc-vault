@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  googleId  String   @unique @map("google_id")
+  email     String   @unique
+  name      String
+  avatarUrl String?  @map("avatar_url")
+  firmId    String   @map("firm_id")
+  firm      Firm     @relation(fields: [firmId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+model Firm {
+  id                 String              @id @default(uuid())
+  name               String
+  logoUrl            String?             @map("logo_url")
+  accentColor        String              @default("#185FA5") @map("accent_color")
+  stripeCustomerId   String?             @unique @map("stripe_customer_id")
+  subscriptionStatus String              @default("trial") @map("subscription_status")
+  trialEndsAt        DateTime?           @map("trial_ends_at")
+  users              User[]
+  clients            Client[]
+  templates          ChecklistTemplate[]
+  createdAt          DateTime            @default(now()) @map("created_at")
+
+  @@map("firms")
+}
+
+model Client {
+  id          String          @id @default(uuid())
+  firmId      String          @map("firm_id")
+  firm        Firm            @relation(fields: [firmId], references: [id])
+  name        String
+  email       String
+  taxYear     String          @map("tax_year")
+  portalToken String          @unique @default(uuid()) @map("portal_token")
+  status      String          @default("not_started")
+  archived    Boolean         @default(false)
+  items       ChecklistItem[]
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@map("clients")
+}
+
+model ChecklistTemplate {
+  id        String                  @id @default(uuid())
+  firmId    String                  @map("firm_id")
+  firm      Firm                    @relation(fields: [firmId], references: [id])
+  name      String
+  items     ChecklistTemplateItem[]
+  createdAt DateTime                @default(now()) @map("created_at")
+
+  @@map("checklist_templates")
+}
+
+model ChecklistTemplateItem {
+  id          String            @id @default(uuid())
+  templateId  String            @map("template_id")
+  template    ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  label       String
+  description String?
+  required    Boolean           @default(true)
+  sortOrder   Int               @default(0) @map("sort_order")
+
+  @@map("checklist_template_items")
+}
+
+model ChecklistItem {
+  id          String    @id @default(uuid())
+  clientId    String    @map("client_id")
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  label       String
+  description String?
+  required    Boolean   @default(true)
+  sortOrder   Int       @default(0) @map("sort_order")
+  completedAt DateTime? @map("completed_at")
+  uploads     Upload[]
+
+  @@map("checklist_items")
+}
+
+model Upload {
+  id              String        @id @default(uuid())
+  checklistItemId String        @map("checklist_item_id")
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+  storagePath     String        @map("storage_path")
+  filename        String
+  fileSize        Int           @map("file_size")
+  mimeType        String        @map("mime_type")
+  uploadedAt      DateTime      @default(now()) @map("uploaded_at")
+
+  @@map("uploads")
+}

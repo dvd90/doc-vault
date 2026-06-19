@@ -1,1 +1,8 @@
 .claude/settings.local.json
+node_modules/
+coverage/
+dist/
+.env
+apps/api/.env.test
+apps/api/node_modules/
+
