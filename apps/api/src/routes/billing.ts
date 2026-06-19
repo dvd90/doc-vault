@@ -46,7 +46,7 @@ billingRouter.post('/webhook', async (req, res, next) => {
   try {
     await BillingService.handleWebhookEvent(
       event.type,
-      event.data.object as Record<string, unknown>,
+      event.data.object as unknown as Record<string, unknown>,
     )
     res.json({ received: true })
   } catch (err) {

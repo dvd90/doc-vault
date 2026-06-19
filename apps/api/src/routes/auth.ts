@@ -20,7 +20,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       async (_accessToken, _refreshToken, profile, done) => {
         try {
           const user = await AuthService.findOrCreateUser(profile)
-          done(null, user)
+          done(null, { userId: user.id, firmId: user.firmId })
         } catch (err) {
           done(err as Error)
         }
@@ -35,12 +35,12 @@ authRouter.get(
   '/google/callback',
   passport.authenticate('google', { session: false, failureRedirect: '/login' }),
   (req, res) => {
-    const user = req.user as { id: string; firmId: string } | undefined
+    const user = req.user
     if (!user) return res.redirect('/login')
     const token = jwt.sign(
-      { userId: user.id, firmId: user.firmId },
+      { userId: user.userId, firmId: user.firmId },
       process.env.JWT_SECRET ?? 'test-secret',
-      { expiresIn: process.env.JWT_EXPIRY ?? '30d' },
+      { expiresIn: (process.env.JWT_EXPIRY ?? '30d') as jwt.SignOptions['expiresIn'] },
     )
     res.cookie('token', token, { httpOnly: true, sameSite: 'lax' })
     res.redirect(`${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/dashboard`)
