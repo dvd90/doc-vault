@@ -37,6 +37,7 @@ PostgreSQL plugin:
 | `GOOGLE_CLIENT_ID`      | Google Cloud OAuth credentials                         |
 | `GOOGLE_CLIENT_SECRET`  | Google Cloud OAuth credentials                         |
 | `GOOGLE_CALLBACK_URL`   | `https://<api-domain>/auth/google/callback`            |
+| `API_URL`               | `https://<api-domain>` — used in magic-link emails     |
 | `STRIPE_SECRET_KEY`     | `sk_live_…` (or `sk_test_…`)                           |
 | `STRIPE_WEBHOOK_SECRET` | From the Stripe webhook endpoint                       |
 | `STRIPE_PRICE_ID`       | `price_…` for the $49/mo plan                          |

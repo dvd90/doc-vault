@@ -1,10 +1,18 @@
 import { loginUrl } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { MagicLinkForm } from '@/components/auth/magic-link-form'
 
-export default function LoginPage() {
+export default function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+  const errorMessage =
+    searchParams.error === 'invalid_link'
+      ? 'That sign-in link is invalid or has expired. Request a new one below.'
+      : searchParams.error === 'missing_token'
+        ? 'Something went wrong during sign-in. Please try again.'
+        : null
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30">
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <div className="text-3xl font-bold text-primary mb-2">DocVault</div>
@@ -12,7 +20,13 @@ export default function LoginPage() {
             Document collection for accountants
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {errorMessage && (
+            <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {errorMessage}
+            </p>
+          )}
+
           <a href={loginUrl()}>
             <Button className="w-full" size="lg">
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -36,6 +50,17 @@ export default function LoginPage() {
               Sign in with Google
             </Button>
           </a>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">or</span>
+            </div>
+          </div>
+
+          <MagicLinkForm />
         </CardContent>
       </Card>
     </div>

@@ -2,6 +2,7 @@ import { resend } from '../lib/resend'
 import { prisma } from '../lib/prisma'
 
 const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:3000'
+const API_URL = process.env.API_URL ?? 'http://localhost:4000'
 const FROM_EMAIL = 'noreply@docvault.app'
 
 export const NotificationService = {
@@ -57,6 +58,23 @@ export const NotificationService = {
       to: accountantEmails[0],
       subject: `${client.name} has completed their checklist`,
       html: `<p>${client.name} has uploaded all required documents.</p>`,
+    })
+  },
+
+  async sendMagicLink(email: string, token: string) {
+    const link = `${API_URL}/auth/magic-link/callback?token=${token}`
+
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Your DocVault sign-in link',
+      html: `
+        <h2>Sign in to DocVault</h2>
+        <p>Click the link below to sign in. It expires in 1 hour and can only be used once.</p>
+        <p><a href="${link}">Sign in to DocVault</a></p>
+        <p>Or copy this link: ${link}</p>
+        <p>If you didn't request this, you can safely ignore this email.</p>
+      `,
     })
   },
 
