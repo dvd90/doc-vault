@@ -8,6 +8,15 @@ import { AuthService } from '../services/auth.service'
 
 export const authRouter = Router()
 
+// In production the web and API are served from different domains, so the auth
+// cookie must be SameSite=None + Secure to survive cross-site fetch requests.
+const isProd = process.env.NODE_ENV === 'production'
+const authCookieOptions = {
+  httpOnly: true,
+  sameSite: isProd ? ('none' as const) : ('lax' as const),
+  secure: isProd,
+}
+
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   passport.use(
     new GoogleStrategy(
@@ -42,7 +51,7 @@ authRouter.get(
       process.env.JWT_SECRET ?? 'test-secret',
       { expiresIn: (process.env.JWT_EXPIRY ?? '30d') as jwt.SignOptions['expiresIn'] },
     )
-    res.cookie('token', token, { httpOnly: true, sameSite: 'lax' })
+    res.cookie('token', token, authCookieOptions)
     res.redirect(`${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/dashboard`)
   },
 )
@@ -58,6 +67,6 @@ authRouter.get('/me', requireAuth, async (req, res, next) => {
 })
 
 authRouter.post('/logout', requireAuth, (_req, res) => {
-  res.cookie('token', '', { httpOnly: true, maxAge: 0 })
+  res.cookie('token', '', { ...authCookieOptions, maxAge: 0 })
   res.json({ ok: true })
 })
