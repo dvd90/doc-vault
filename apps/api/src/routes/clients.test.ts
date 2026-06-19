@@ -3,17 +3,23 @@ import { createTestFirm, createTestUser, createTestClient } from '../test/factor
 
 describe('POST /clients', () => {
   it('returns 401 when unauthenticated', async () => {
-    expect((await api.post('/clients').send({ name: 'A', email: 'a@b.com', taxYear: '2024-25' })).status).toBe(401)
+    expect(
+      (await api.post('/clients').send({ name: 'A', email: 'a@b.com', taxYear: '2024-25' })).status,
+    ).toBe(401)
   })
   it('returns 400 for invalid body', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: '' })).status).toBe(400)
+    expect(
+      (await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: '' })).status,
+    ).toBe(400)
   })
   it('creates client and returns 201', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .post('/clients')
+      .send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
     expect(res.status).toBe(201)
     expect(res.body.name).toBe('Alice')
     expect(res.body.portalToken).toBeDefined()
@@ -21,7 +27,9 @@ describe('POST /clients', () => {
   it('scopes client to authenticated firm', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .post('/clients')
+      .send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
     expect(res.body.firmId).toBe(firm.id)
   })
 })
@@ -53,7 +61,9 @@ describe('GET /clients/:id', () => {
     const firmB = await createTestFirm()
     const userB = await createTestUser(firmB.id)
     const client = await createTestClient(firmA.id)
-    expect((await makeAuthedRequest(userB.id, firmB.id).get(`/clients/${client.id}`)).status).toBe(404)
+    expect((await makeAuthedRequest(userB.id, firmB.id).get(`/clients/${client.id}`)).status).toBe(
+      404,
+    )
   })
   it('returns client with items', async () => {
     const firm = await createTestFirm()
@@ -70,14 +80,22 @@ describe('PATCH /clients/:id', () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
     const client = await createTestClient(firm.id, { name: 'Old' })
-    const res = await makeAuthedRequest(user.id, firm.id).patch(`/clients/${client.id}`).send({ name: 'New' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .patch(`/clients/${client.id}`)
+      .send({ name: 'New' })
     expect(res.status).toBe(200)
     expect(res.body.name).toBe('New')
   })
   it('returns 404 for unknown id', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).patch('/clients/does-not-exist').send({ name: 'X' })).status).toBe(404)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firm.id)
+          .patch('/clients/does-not-exist')
+          .send({ name: 'X' })
+      ).status,
+    ).toBe(404)
   })
 })
 
@@ -86,6 +104,8 @@ describe('DELETE /clients/:id', () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
     const client = await createTestClient(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).delete(`/clients/${client.id}`)).status).toBe(204)
+    expect((await makeAuthedRequest(user.id, firm.id).delete(`/clients/${client.id}`)).status).toBe(
+      204,
+    )
   })
 })

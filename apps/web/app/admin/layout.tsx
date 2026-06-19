@@ -15,8 +15,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-xs text-rose-600 font-medium mt-0.5">Admin Panel</p>
         </div>
         <nav className="flex-1 p-3 space-y-1">
-          <NavLink href="/admin" icon={<LayoutDashboard className="h-4 w-4" />}>Overview</NavLink>
-          <NavLink href="/admin/firms" icon={<Building2 className="h-4 w-4" />}>Firms</NavLink>
+          <NavLink href="/admin" icon={<LayoutDashboard className="h-4 w-4" />}>
+            Overview
+          </NavLink>
+          <NavLink href="/admin/firms" icon={<Building2 className="h-4 w-4" />}>
+            Firms
+          </NavLink>
         </nav>
         <div className="p-3 border-t">
           <form action="/admin/logout" method="POST">
@@ -34,7 +38,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   )
 }
 
-function NavLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+function NavLink({
+  href,
+  icon,
+  children,
+}: {
+  href: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
   return (
     <Link
       href={href}

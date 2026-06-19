@@ -8,7 +8,9 @@ vi.mock('../services/notification.service', () => ({
 }))
 vi.mock('../services/upload.service', () => ({
   UploadService: {
-    uploadFile: vi.fn().mockResolvedValue({ id: 'upload-1', filename: 'p60.pdf', storagePath: 's3://test' }),
+    uploadFile: vi
+      .fn()
+      .mockResolvedValue({ id: 'upload-1', filename: 'p60.pdf', storagePath: 's3://test' }),
   },
 }))
 
@@ -49,7 +51,10 @@ describe('POST /portal/:token/upload/:itemId', () => {
     const item = await createTestChecklistItem(client.id)
     const res = await api
       .post(`/portal/${client.portalToken}/upload/${item.id}`)
-      .attach('file', Buffer.from('data'), { filename: 'virus.exe', contentType: 'application/exe' })
+      .attach('file', Buffer.from('data'), {
+        filename: 'virus.exe',
+        contentType: 'application/exe',
+      })
     expect(res.status).toBe(400)
   })
   it('marks item complete and returns updated item on success', async () => {
@@ -58,7 +63,10 @@ describe('POST /portal/:token/upload/:itemId', () => {
     const item = await createTestChecklistItem(client.id)
     const res = await api
       .post(`/portal/${client.portalToken}/upload/${item.id}`)
-      .attach('file', Buffer.from('%PDF-1.4'), { filename: 'p60.pdf', contentType: 'application/pdf' })
+      .attach('file', Buffer.from('%PDF-1.4'), {
+        filename: 'p60.pdf',
+        contentType: 'application/pdf',
+      })
     expect(res.status).toBe(200)
     expect(res.body.item.completedAt).toBeDefined()
   })

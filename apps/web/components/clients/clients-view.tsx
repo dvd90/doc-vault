@@ -70,7 +70,9 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Clients</h1>
-          <p className="text-muted-foreground">{clients.length} active client{clients.length !== 1 ? 's' : ''}</p>
+          <p className="text-muted-foreground">
+            {clients.length} active client{clients.length !== 1 ? 's' : ''}
+          </p>
         </div>
         <Button onClick={() => setOpen(true)}>
           <Plus className="h-4 w-4 mr-2" /> Add client
@@ -95,7 +97,9 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
               <CardContent className="flex items-center justify-between py-4">
                 <Link href={`/clients/${client.id}`} className="flex-1 min-w-0">
                   <div className="font-medium">{client.name}</div>
-                  <div className="text-sm text-muted-foreground">{client.email} · {client.taxYear}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {client.email} · {client.taxYear}
+                  </div>
                 </Link>
                 <div className="flex items-center gap-3">
                   <Badge variant={STATUS_VARIANT[client.status] ?? 'outline'}>
@@ -119,19 +123,42 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="name">Full name</Label>
-              <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Alice Smith" required />
+              <Input
+                id="name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Alice Smith"
+                required
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="alice@example.com" required />
+              <Input
+                id="email"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="alice@example.com"
+                required
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="taxYear">Tax year</Label>
-              <Input id="taxYear" value={form.taxYear} onChange={(e) => setForm({ ...form, taxYear: e.target.value })} placeholder="2024-25" required />
+              <Input
+                id="taxYear"
+                value={form.taxYear}
+                onChange={(e) => setForm({ ...form, taxYear: e.target.value })}
+                placeholder="2024-25"
+                required
+              />
             </div>
             <div className="flex gap-2 justify-end pt-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={saving}>{saving ? 'Creating…' : 'Create client'}</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? 'Creating…' : 'Create client'}
+              </Button>
             </div>
           </form>
         </DialogContent>

@@ -20,6 +20,8 @@ describe('updateFirmSchema', () => {
     expect(updateFirmSchema.safeParse({}).success).toBe(false)
   })
   it('accepts both fields together', () => {
-    expect(updateFirmSchema.safeParse({ name: 'Smith CPA', accentColor: '#185FA5' }).success).toBe(true)
+    expect(updateFirmSchema.safeParse({ name: 'Smith CPA', accentColor: '#185FA5' }).success).toBe(
+      true,
+    )
   })
 })

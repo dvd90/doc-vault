@@ -35,9 +35,15 @@ export default async function AdminFirmsPage() {
           </thead>
           <tbody>
             {firms.map((firm) => (
-              <tr key={firm.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+              <tr
+                key={firm.id}
+                className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+              >
                 <td className="px-4 py-3">
-                  <Link href={`/admin/firms/${firm.id}`} className="font-medium hover:underline text-primary">
+                  <Link
+                    href={`/admin/firms/${firm.id}`}
+                    className="font-medium hover:underline text-primary"
+                  >
                     {firm.name}
                   </Link>
                 </td>
@@ -55,7 +61,9 @@ export default async function AdminFirmsPage() {
             ))}
             {firms.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No firms yet.</td>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                  No firms yet.
+                </td>
               </tr>
             )}
           </tbody>

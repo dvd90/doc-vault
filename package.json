@@ -1,17 +1,22 @@
 {
   "name": "docvault",
   "private": true,
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
     "build": "npm run build --workspaces",
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "playwright test",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "npm run lint --workspaces --if-present",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "concurrently": "^8.2.0",
     "@playwright/test": "^1.44.0",
+    "concurrently": "^8.2.0",
+    "prettier": "^3.8.4",
     "typescript": "^5.4.0"
   }
 }

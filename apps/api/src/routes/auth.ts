@@ -14,7 +14,8 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL ?? 'http://localhost:4000/auth/google/callback',
+        callbackURL:
+          process.env.GOOGLE_CALLBACK_URL ?? 'http://localhost:4000/auth/google/callback',
       },
       async (_accessToken, _refreshToken, profile, done) => {
         try {
@@ -23,8 +24,8 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         } catch (err) {
           done(err as Error)
         }
-      }
-    )
+      },
+    ),
   )
 }
 
@@ -39,11 +40,11 @@ authRouter.get(
     const token = jwt.sign(
       { userId: user.id, firmId: user.firmId },
       process.env.JWT_SECRET ?? 'test-secret',
-      { expiresIn: process.env.JWT_EXPIRY ?? '30d' }
+      { expiresIn: process.env.JWT_EXPIRY ?? '30d' },
     )
     res.cookie('token', token, { httpOnly: true, sameSite: 'lax' })
     res.redirect(`${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/dashboard`)
-  }
+  },
 )
 
 authRouter.get('/me', requireAuth, async (req, res, next) => {

@@ -34,7 +34,11 @@ portalRouter.get('/:token', async (req, res, next) => {
 
     res.json({
       client: { id: client.id, name: client.name, status: client.status },
-      firm: { name: client.firm.name, accentColor: client.firm.accentColor, logoUrl: client.firm.logoUrl },
+      firm: {
+        name: client.firm.name,
+        accentColor: client.firm.accentColor,
+        logoUrl: client.firm.logoUrl,
+      },
       items: client.items,
     })
   } catch (err) {
@@ -94,5 +98,5 @@ portalRouter.post(
     } catch (err) {
       next(err)
     }
-  }
+  },
 )

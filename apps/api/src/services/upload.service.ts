@@ -24,7 +24,7 @@ export const UploadService = {
         Key: key,
         Body: input.buffer,
         ContentType: input.mimeType,
-      })
+      }),
     )
 
     return prisma.upload.create({

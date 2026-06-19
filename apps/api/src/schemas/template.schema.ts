@@ -9,7 +9,7 @@ export const createTemplateSchema = z.object({
         description: z.string().optional(),
         required: z.boolean().default(true),
         sortOrder: z.number().int().default(0),
-      })
+      }),
     )
     .min(1),
 })

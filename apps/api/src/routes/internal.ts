@@ -18,7 +18,11 @@ internalRouter.post('/reminders/send', async (req, res, next) => {
   }
 })
 
-function requireAdmin(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) {
+function requireAdmin(
+  req: import('express').Request,
+  res: import('express').Response,
+  next: import('express').NextFunction,
+) {
   const secret = req.headers['x-admin-secret']
   if (!secret || secret !== process.env.ADMIN_SECRET) {
     return res.status(401).json({ code: 'UNAUTHORIZED', message: 'Invalid admin secret' })

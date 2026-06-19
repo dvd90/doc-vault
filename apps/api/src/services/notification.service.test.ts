@@ -5,7 +5,12 @@ vi.mock('../lib/resend', () => ({
 }))
 
 import { NotificationService } from './notification.service'
-import { createTestFirm, createTestClient, createTestChecklistItem, createTestUser } from '../test/factories'
+import {
+  createTestFirm,
+  createTestClient,
+  createTestChecklistItem,
+  createTestUser,
+} from '../test/factories'
 
 describe('NotificationService', () => {
   describe('sendPortalInvite', () => {
@@ -14,7 +19,9 @@ describe('NotificationService', () => {
       const firm = await createTestFirm({ name: 'ACME CPA' })
       const client = await createTestClient(firm.id, { email: 'bob@client.com' })
       await NotificationService.sendPortalInvite(client.id)
-      expect(resend.emails.send).toHaveBeenCalledWith(expect.objectContaining({ to: 'bob@client.com' }))
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({ to: 'bob@client.com' }),
+      )
     })
     it('email body contains the portalToken', async () => {
       const { resend } = await import('../lib/resend')

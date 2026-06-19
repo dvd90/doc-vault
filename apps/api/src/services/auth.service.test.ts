@@ -28,7 +28,11 @@ describe('AuthService.findOrCreateUser', () => {
 
   it('updates name and avatar if changed', async () => {
     const firm = await createTestFirm()
-    await createTestUser(firm.id, { googleId: 'google-123', name: 'Old Name', avatarUrl: 'https://old.url' })
+    await createTestUser(firm.id, {
+      googleId: 'google-123',
+      name: 'Old Name',
+      avatarUrl: 'https://old.url',
+    })
     const user = await AuthService.findOrCreateUser(googleProfile)
     expect(user.name).toBe('Jane Smith')
     expect(user.avatarUrl).toBe('https://lh3.googleusercontent.com/photo.jpg')

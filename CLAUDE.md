@@ -8,18 +8,21 @@
 ## How to use this file
 
 **Starting a session:**
+
 ```
 Read CLAUDE.md fully. We are on Phase X, task Y.Z.
 Follow TDD strictly — write the failing test first, then the minimum implementation to make it pass.
 ```
 
 **Moving to the next task:**
+
 ```
 All tests pass. Mark task Y.Z complete in CLAUDE.md and move to Y.Z+1.
 Write the failing test first. Do not skip ahead.
 ```
 
 **When a test fails unexpectedly:**
+
 ```
 Test [name] is failing with [error].
 Read CLAUDE.md and fix only what is needed to make this test pass without breaking others.
@@ -49,13 +52,13 @@ These are non-negotiable. Follow them in every session without exception.
 
 ## Project overview
 
-| | |
-|--|--|
-| **Product** | SaaS for accountants to collect documents from clients |
-| **Core loop** | Accountant creates checklist → sends magic link → client uploads files → accountant notified |
-| **Client login?** | No. Clients access their portal via a unique token URL only. |
-| **Auth** | Accountants log in via Google OAuth. JWT stored in HttpOnly cookie. |
-| **Billing** | Stripe. $49/mo. 14-day free trial. Statuses: trial → active → cancelled. |
+|                   |                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------- |
+| **Product**       | SaaS for accountants to collect documents from clients                                       |
+| **Core loop**     | Accountant creates checklist → sends magic link → client uploads files → accountant notified |
+| **Client login?** | No. Clients access their portal via a unique token URL only.                                 |
+| **Auth**          | Accountants log in via Google OAuth. JWT stored in HttpOnly cookie.                          |
+| **Billing**       | Stripe. $49/mo. 14-day free trial. Statuses: trial → active → cancelled.                     |
 
 ---
 
@@ -322,11 +325,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -338,12 +341,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"
+      - '5433:5432'
 
   adminer:
     image: adminer:latest
     ports:
-      - "8080:8080"
+      - '8080:8080'
 
 volumes:
   postgres_data:
@@ -553,7 +556,10 @@ export async function createTestClient(firmId: string, overrides: Record<string,
   })
 }
 
-export async function createTestChecklistItem(clientId: string, overrides: Record<string, unknown> = {}) {
+export async function createTestChecklistItem(
+  clientId: string,
+  overrides: Record<string, unknown> = {},
+) {
   return prisma.checklistItem.create({
     data: {
       clientId,
@@ -583,7 +589,10 @@ export async function createTestTemplate(firmId: string, overrides: Record<strin
   })
 }
 
-export async function createTestUpload(checklistItemId: string, overrides: Record<string, unknown> = {}) {
+export async function createTestUpload(
+  checklistItemId: string,
+  overrides: Record<string, unknown> = {},
+) {
   return prisma.upload.create({
     data: {
       checklistItemId,
@@ -607,20 +616,16 @@ import { app } from '../app'
 export const api = supertest(app)
 
 export function signTestJwt(userId: string, firmId: string): string {
-  return jwt.sign(
-    { userId, firmId },
-    process.env.JWT_SECRET ?? 'test-secret',
-    { expiresIn: '1h' }
-  )
+  return jwt.sign({ userId, firmId }, process.env.JWT_SECRET ?? 'test-secret', { expiresIn: '1h' })
 }
 
 export function makeAuthedRequest(userId: string, firmId: string) {
   const token = signTestJwt(userId, firmId)
   const cookie = `token=${token}`
   return {
-    get:    (url: string) => api.get(url).set('Cookie', cookie),
-    post:   (url: string) => api.post(url).set('Cookie', cookie),
-    patch:  (url: string) => api.patch(url).set('Cookie', cookie),
+    get: (url: string) => api.get(url).set('Cookie', cookie),
+    post: (url: string) => api.post(url).set('Cookie', cookie),
+    patch: (url: string) => api.patch(url).set('Cookie', cookie),
     delete: (url: string) => api.delete(url).set('Cookie', cookie),
   }
 }
@@ -633,7 +638,7 @@ export class AppError extends Error {
   constructor(
     public message: string,
     public statusCode: number,
-    public code: string
+    public code: string,
   ) {
     super(message)
     this.name = 'AppError'
@@ -665,7 +670,10 @@ export class PaymentRequiredError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, public fields?: Record<string, string[]>) {
+  constructor(
+    message: string,
+    public fields?: Record<string, string[]>,
+  ) {
     super(message, 400, 'VALIDATION_ERROR')
   }
 }
@@ -688,34 +696,34 @@ export {}
 
 ## API route reference
 
-| Method | Path | Auth | Phase | Description |
-|--------|------|------|-------|-------------|
-| GET | /health | None | 1 | Uptime check |
-| GET | /auth/google | None | 1 | Initiate Google OAuth |
-| GET | /auth/google/callback | None | 1 | OAuth callback, sets JWT cookie |
-| GET | /auth/me | JWT | 1 | Current user + firm |
-| POST | /auth/logout | JWT | 1 | Clear JWT cookie |
-| POST | /billing/checkout | JWT | 1 | Create Stripe Checkout session |
-| POST | /billing/webhook | Stripe-sig | 1 | Stripe event handler (raw body) |
-| POST | /billing/portal | JWT+Sub | 1 | Stripe customer portal URL |
-| POST | /clients | JWT+Sub | 1 | Create client |
-| GET | /clients | JWT+Sub | 1 | List non-archived clients |
-| GET | /clients/:id | JWT+Sub | 1 | Client + checklist items |
-| PATCH | /clients/:id | JWT+Sub | 1 | Update client |
-| DELETE | /clients/:id | JWT+Sub | 1 | Soft-delete (set archived=true) |
-| GET | /templates | JWT+Sub | 2 | List firm templates |
-| POST | /templates | JWT+Sub | 2 | Create template with items |
-| PATCH | /templates/:id | JWT+Sub | 2 | Update template |
-| DELETE | /templates/:id | JWT+Sub | 2 | Delete template |
-| POST | /clients/:id/apply-template | JWT+Sub | 2 | Copy template items to client |
-| POST | /clients/:id/invite | JWT+Sub | 2 | Send portal invite email |
-| POST | /clients/:id/remind | JWT+Sub | 3 | Manual reminder email to client |
-| GET | /portal/:token | None | 2 | Public portal — client data + firm branding |
-| POST | /portal/:token/upload/:itemId | None | 2 | Client file upload |
-| GET | /dashboard/stats | JWT+Sub | 3 | Overview counts |
-| PATCH | /firms/me | JWT+Sub | 3 | Update firm name / accent colour |
-| POST | /firms/me/logo | JWT+Sub | 3 | Upload firm logo to S3 |
-| POST | /internal/reminders/send | CRON_SECRET | 3 | Trigger daily reminder job |
+| Method | Path                          | Auth        | Phase | Description                                 |
+| ------ | ----------------------------- | ----------- | ----- | ------------------------------------------- |
+| GET    | /health                       | None        | 1     | Uptime check                                |
+| GET    | /auth/google                  | None        | 1     | Initiate Google OAuth                       |
+| GET    | /auth/google/callback         | None        | 1     | OAuth callback, sets JWT cookie             |
+| GET    | /auth/me                      | JWT         | 1     | Current user + firm                         |
+| POST   | /auth/logout                  | JWT         | 1     | Clear JWT cookie                            |
+| POST   | /billing/checkout             | JWT         | 1     | Create Stripe Checkout session              |
+| POST   | /billing/webhook              | Stripe-sig  | 1     | Stripe event handler (raw body)             |
+| POST   | /billing/portal               | JWT+Sub     | 1     | Stripe customer portal URL                  |
+| POST   | /clients                      | JWT+Sub     | 1     | Create client                               |
+| GET    | /clients                      | JWT+Sub     | 1     | List non-archived clients                   |
+| GET    | /clients/:id                  | JWT+Sub     | 1     | Client + checklist items                    |
+| PATCH  | /clients/:id                  | JWT+Sub     | 1     | Update client                               |
+| DELETE | /clients/:id                  | JWT+Sub     | 1     | Soft-delete (set archived=true)             |
+| GET    | /templates                    | JWT+Sub     | 2     | List firm templates                         |
+| POST   | /templates                    | JWT+Sub     | 2     | Create template with items                  |
+| PATCH  | /templates/:id                | JWT+Sub     | 2     | Update template                             |
+| DELETE | /templates/:id                | JWT+Sub     | 2     | Delete template                             |
+| POST   | /clients/:id/apply-template   | JWT+Sub     | 2     | Copy template items to client               |
+| POST   | /clients/:id/invite           | JWT+Sub     | 2     | Send portal invite email                    |
+| POST   | /clients/:id/remind           | JWT+Sub     | 3     | Manual reminder email to client             |
+| GET    | /portal/:token                | None        | 2     | Public portal — client data + firm branding |
+| POST   | /portal/:token/upload/:itemId | None        | 2     | Client file upload                          |
+| GET    | /dashboard/stats              | JWT+Sub     | 3     | Overview counts                             |
+| PATCH  | /firms/me                     | JWT+Sub     | 3     | Update firm name / accent colour            |
+| POST   | /firms/me/logo                | JWT+Sub     | 3     | Upload firm logo to S3                      |
+| POST   | /internal/reminders/send      | CRON_SECRET | 3     | Trigger daily reminder job                  |
 
 ---
 
@@ -768,6 +776,7 @@ describe('GET /health', () => {
 ## Task 1.2 — Prisma + database
 
 **Create:**
+
 - `apps/api/prisma/schema.prisma` (full schema above)
 - `apps/api/src/lib/prisma.ts` — singleton `PrismaClient`
 - `apps/api/src/test/setup.ts`
@@ -777,6 +786,7 @@ describe('GET /health', () => {
 - `apps/api/src/types/express.d.ts`
 
 **Run:**
+
 ```bash
 cd apps/api
 npm run db:migrate          # name the migration "init"
@@ -820,8 +830,12 @@ describe('database connectivity', () => {
 
   it('two clients get different portalTokens', async () => {
     const firm = await createTestFirm()
-    const c1 = await prisma.client.create({ data: { firmId: firm.id, name: 'A', email: 'a@t.com', taxYear: '2024-25' } })
-    const c2 = await prisma.client.create({ data: { firmId: firm.id, name: 'B', email: 'b@t.com', taxYear: '2024-25' } })
+    const c1 = await prisma.client.create({
+      data: { firmId: firm.id, name: 'A', email: 'a@t.com', taxYear: '2024-25' },
+    })
+    const c2 = await prisma.client.create({
+      data: { firmId: firm.id, name: 'B', email: 'b@t.com', taxYear: '2024-25' },
+    })
     expect(c1.portalToken).not.toBe(c2.portalToken)
   })
 })
@@ -846,11 +860,15 @@ const schema = z.object({
   email: z.string().email(),
 })
 
-function run(body: unknown): Promise<{ status?: number; body?: unknown; next: boolean; reqBody?: unknown }> {
+function run(
+  body: unknown,
+): Promise<{ status?: number; body?: unknown; next: boolean; reqBody?: unknown }> {
   return new Promise((resolve) => {
     const req = { body } as Request
     const res = {
-      status: (code: number) => ({ json: (data: unknown) => resolve({ status: code, body: data, next: false }) }),
+      status: (code: number) => ({
+        json: (data: unknown) => resolve({ status: code, body: data, next: false }),
+      }),
     } as unknown as Response
     const next = () => resolve({ next: true, reqBody: req.body })
     validate(schema)(req, res, next as NextFunction)
@@ -905,7 +923,9 @@ describe('requireAuth', () => {
   })
 
   it('returns 401 for expired JWT', async () => {
-    const expired = jwt.sign({ userId: 'u', firmId: 'f' }, process.env.JWT_SECRET!, { expiresIn: '-1s' })
+    const expired = jwt.sign({ userId: 'u', firmId: 'f' }, process.env.JWT_SECRET!, {
+      expiresIn: '-1s',
+    })
     const res = await api.get('/test/protected').set('Cookie', `token=${expired}`)
     expect(res.status).toBe(401)
   })
@@ -1009,7 +1029,11 @@ describe('AuthService.findOrCreateUser', () => {
 
   it('updates name and avatar if changed', async () => {
     const firm = await createTestFirm()
-    await createTestUser(firm.id, { googleId: 'google-123', name: 'Old Name', avatarUrl: 'https://old.url' })
+    await createTestUser(firm.id, {
+      googleId: 'google-123',
+      name: 'Old Name',
+      avatarUrl: 'https://old.url',
+    })
     const user = await AuthService.findOrCreateUser(googleProfile as any)
     expect(user.name).toBe('Jane Smith')
     expect(user.avatarUrl).toBe('https://lh3.googleusercontent.com/photo.jpg')
@@ -1078,16 +1102,29 @@ import { createClientSchema, updateClientSchema } from './client.schema'
 
 describe('createClientSchema', () => {
   it('accepts valid data', () => {
-    expect(createClientSchema.safeParse({ name: 'Alice', email: 'alice@example.com', taxYear: '2024-25' }).success).toBe(true)
+    expect(
+      createClientSchema.safeParse({
+        name: 'Alice',
+        email: 'alice@example.com',
+        taxYear: '2024-25',
+      }).success,
+    ).toBe(true)
   })
   it('rejects missing name', () => {
-    expect(createClientSchema.safeParse({ email: 'a@b.com', taxYear: '2024-25' }).success).toBe(false)
+    expect(createClientSchema.safeParse({ email: 'a@b.com', taxYear: '2024-25' }).success).toBe(
+      false,
+    )
   })
   it('rejects invalid email', () => {
-    expect(createClientSchema.safeParse({ name: 'Alice', email: 'not-email', taxYear: '2024-25' }).success).toBe(false)
+    expect(
+      createClientSchema.safeParse({ name: 'Alice', email: 'not-email', taxYear: '2024-25' })
+        .success,
+    ).toBe(false)
   })
   it('rejects empty taxYear', () => {
-    expect(createClientSchema.safeParse({ name: 'Alice', email: 'a@b.com', taxYear: '' }).success).toBe(false)
+    expect(
+      createClientSchema.safeParse({ name: 'Alice', email: 'a@b.com', taxYear: '' }).success,
+    ).toBe(false)
   })
 })
 
@@ -1116,18 +1153,34 @@ describe('ClientService', () => {
   describe('create', () => {
     it('creates client scoped to firm', async () => {
       const firm = await createTestFirm()
-      const client = await ClientService.create(firm.id, { name: 'Alice', email: 'a@t.com', taxYear: '2024-25' })
+      const client = await ClientService.create(firm.id, {
+        name: 'Alice',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
       expect(client.firmId).toBe(firm.id)
     })
     it('sets status to not_started', async () => {
       const firm = await createTestFirm()
-      const client = await ClientService.create(firm.id, { name: 'A', email: 'a@t.com', taxYear: '2024-25' })
+      const client = await ClientService.create(firm.id, {
+        name: 'A',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
       expect(client.status).toBe('not_started')
     })
     it('auto-generates unique portalTokens', async () => {
       const firm = await createTestFirm()
-      const c1 = await ClientService.create(firm.id, { name: 'A', email: 'a@t.com', taxYear: '2024-25' })
-      const c2 = await ClientService.create(firm.id, { name: 'B', email: 'b@t.com', taxYear: '2024-25' })
+      const c1 = await ClientService.create(firm.id, {
+        name: 'A',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
+      const c2 = await ClientService.create(firm.id, {
+        name: 'B',
+        email: 'b@t.com',
+        taxYear: '2024-25',
+      })
       expect(c1.portalToken).not.toBe(c2.portalToken)
     })
   })
@@ -1186,7 +1239,9 @@ describe('ClientService', () => {
       const firmA = await createTestFirm()
       const firmB = await createTestFirm()
       const client = await createTestClient(firmA.id)
-      await expect(ClientService.update(firmB.id, client.id, { name: 'X' })).rejects.toThrow(NotFoundError)
+      await expect(ClientService.update(firmB.id, client.id, { name: 'X' })).rejects.toThrow(
+        NotFoundError,
+      )
     })
   })
 
@@ -1214,17 +1269,23 @@ import { createTestFirm, createTestUser, createTestClient } from '../test/factor
 
 describe('POST /clients', () => {
   it('returns 401 when unauthenticated', async () => {
-    expect((await api.post('/clients').send({ name: 'A', email: 'a@b.com', taxYear: '2024-25' })).status).toBe(401)
+    expect(
+      (await api.post('/clients').send({ name: 'A', email: 'a@b.com', taxYear: '2024-25' })).status,
+    ).toBe(401)
   })
   it('returns 400 for invalid body', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: '' })).status).toBe(400)
+    expect(
+      (await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: '' })).status,
+    ).toBe(400)
   })
   it('creates client and returns 201', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .post('/clients')
+      .send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
     expect(res.status).toBe(201)
     expect(res.body.name).toBe('Alice')
     expect(res.body.portalToken).toBeDefined()
@@ -1232,7 +1293,9 @@ describe('POST /clients', () => {
   it('scopes client to authenticated firm', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).post('/clients').send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .post('/clients')
+      .send({ name: 'Alice', email: 'alice@test.com', taxYear: '2024-25' })
     expect(res.body.firmId).toBe(firm.id)
   })
 })
@@ -1264,7 +1327,9 @@ describe('GET /clients/:id', () => {
     const firmB = await createTestFirm()
     const userB = await createTestUser(firmB.id)
     const client = await createTestClient(firmA.id)
-    expect((await makeAuthedRequest(userB.id, firmB.id).get(`/clients/${client.id}`)).status).toBe(404)
+    expect((await makeAuthedRequest(userB.id, firmB.id).get(`/clients/${client.id}`)).status).toBe(
+      404,
+    )
   })
   it('returns client with items', async () => {
     const firm = await createTestFirm()
@@ -1281,14 +1346,22 @@ describe('PATCH /clients/:id', () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
     const client = await createTestClient(firm.id, { name: 'Old' })
-    const res = await makeAuthedRequest(user.id, firm.id).patch(`/clients/${client.id}`).send({ name: 'New' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .patch(`/clients/${client.id}`)
+      .send({ name: 'New' })
     expect(res.status).toBe(200)
     expect(res.body.name).toBe('New')
   })
   it('returns 404 for unknown id', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).patch('/clients/does-not-exist').send({ name: 'X' })).status).toBe(404)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firm.id)
+          .patch('/clients/does-not-exist')
+          .send({ name: 'X' })
+      ).status,
+    ).toBe(404)
   })
 })
 
@@ -1297,7 +1370,9 @@ describe('DELETE /clients/:id', () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
     const client = await createTestClient(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).delete(`/clients/${client.id}`)).status).toBe(204)
+    expect((await makeAuthedRequest(user.id, firm.id).delete(`/clients/${client.id}`)).status).toBe(
+      204,
+    )
   })
 })
 ```
@@ -1316,9 +1391,13 @@ import { vi } from 'vitest'
 
 vi.mock('../lib/stripe', () => ({
   stripe: {
-    checkout: { sessions: { create: vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test' }) } },
+    checkout: {
+      sessions: { create: vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test' }) },
+    },
     customers: { create: vi.fn().mockResolvedValue({ id: 'cus_test' }) },
-    billingPortal: { sessions: { create: vi.fn().mockResolvedValue({ url: 'https://billing.stripe.com/test' }) } },
+    billingPortal: {
+      sessions: { create: vi.fn().mockResolvedValue({ url: 'https://billing.stripe.com/test' }) },
+    },
   },
 }))
 
@@ -1338,7 +1417,9 @@ describe('BillingService', () => {
       const firm = await createTestFirm()
       await BillingService.createCheckoutSession(firm.id, 'owner@firm.com')
       expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
-        expect.objectContaining({ subscription_data: expect.objectContaining({ trial_period_days: 14 }) })
+        expect.objectContaining({
+          subscription_data: expect.objectContaining({ trial_period_days: 14 }),
+        }),
       )
     })
   })
@@ -1346,13 +1427,22 @@ describe('BillingService', () => {
   describe('handleWebhookEvent', () => {
     it('sets subscriptionStatus to active on subscription.updated', async () => {
       const firm = await createTestFirm({ stripeCustomerId: 'cus_abc' })
-      await BillingService.handleWebhookEvent('customer.subscription.updated', { customer: 'cus_abc', status: 'active' })
+      await BillingService.handleWebhookEvent('customer.subscription.updated', {
+        customer: 'cus_abc',
+        status: 'active',
+      })
       const updated = await prisma.firm.findUniqueOrThrow({ where: { id: firm.id } })
       expect(updated.subscriptionStatus).toBe('active')
     })
     it('sets subscriptionStatus to cancelled on subscription.deleted', async () => {
-      const firm = await createTestFirm({ stripeCustomerId: 'cus_abc', subscriptionStatus: 'active' })
-      await BillingService.handleWebhookEvent('customer.subscription.deleted', { customer: 'cus_abc', status: 'cancelled' })
+      const firm = await createTestFirm({
+        stripeCustomerId: 'cus_abc',
+        subscriptionStatus: 'active',
+      })
+      await BillingService.handleWebhookEvent('customer.subscription.deleted', {
+        customer: 'cus_abc',
+        status: 'cancelled',
+      })
       const updated = await prisma.firm.findUniqueOrThrow({ where: { id: firm.id } })
       expect(updated.subscriptionStatus).toBe('cancelled')
     })
@@ -1373,7 +1463,9 @@ import { vi } from 'vitest'
 
 vi.mock('../lib/stripe', () => ({
   stripe: {
-    checkout: { sessions: { create: vi.fn().mockResolvedValue({ url: 'https://stripe.com/pay' }) } },
+    checkout: {
+      sessions: { create: vi.fn().mockResolvedValue({ url: 'https://stripe.com/pay' }) },
+    },
     webhooks: { constructEvent: vi.fn() },
   },
 }))
@@ -1408,6 +1500,7 @@ describe('POST /billing/webhook', () => {
 ---
 
 **PHASE 1 DONE WHEN:**
+
 - [ ] All task checkboxes above ticked
 - [ ] `npm test` — all tests green
 - [ ] `npm run test:coverage` — Lines ≥ 80%, Functions ≥ 80%, Branches ≥ 70%
@@ -1434,19 +1527,25 @@ import { createTemplateSchema } from './template.schema'
 
 describe('createTemplateSchema', () => {
   it('accepts valid template with items', () => {
-    expect(createTemplateSchema.safeParse({
-      name: 'SA Pack',
-      items: [{ label: 'P60', required: true, sortOrder: 0 }],
-    }).success).toBe(true)
+    expect(
+      createTemplateSchema.safeParse({
+        name: 'SA Pack',
+        items: [{ label: 'P60', required: true, sortOrder: 0 }],
+      }).success,
+    ).toBe(true)
   })
   it('rejects empty items array', () => {
     expect(createTemplateSchema.safeParse({ name: 'Pack', items: [] }).success).toBe(false)
   })
   it('rejects blank name', () => {
-    expect(createTemplateSchema.safeParse({ name: '', items: [{ label: 'P60' }] }).success).toBe(false)
+    expect(createTemplateSchema.safeParse({ name: '', items: [{ label: 'P60' }] }).success).toBe(
+      false,
+    )
   })
   it('rejects item with blank label', () => {
-    expect(createTemplateSchema.safeParse({ name: 'Pack', items: [{ label: '' }] }).success).toBe(false)
+    expect(createTemplateSchema.safeParse({ name: 'Pack', items: [{ label: '' }] }).success).toBe(
+      false,
+    )
   })
 })
 ```
@@ -1459,7 +1558,12 @@ describe('createTemplateSchema', () => {
 // apps/api/src/services/checklist.service.test.ts
 import { ChecklistService } from './checklist.service'
 import { prisma } from '../lib/prisma'
-import { createTestFirm, createTestClient, createTestTemplate, createTestChecklistItem } from '../test/factories'
+import {
+  createTestFirm,
+  createTestClient,
+  createTestTemplate,
+  createTestChecklistItem,
+} from '../test/factories'
 import { NotFoundError } from '../errors/AppError'
 
 describe('ChecklistService', () => {
@@ -1468,7 +1572,10 @@ describe('ChecklistService', () => {
       const firm = await createTestFirm()
       const tmpl = await ChecklistService.createTemplate(firm.id, {
         name: 'SA Pack',
-        items: [{ label: 'P60', required: true, sortOrder: 0 }, { label: 'Bank', required: true, sortOrder: 1 }],
+        items: [
+          { label: 'P60', required: true, sortOrder: 0 },
+          { label: 'Bank', required: true, sortOrder: 1 },
+        ],
       })
       expect(tmpl.items).toHaveLength(2)
       expect(tmpl.items[0].label).toBe('P60')
@@ -1476,7 +1583,10 @@ describe('ChecklistService', () => {
     })
     it('scopes template to firm', async () => {
       const firm = await createTestFirm()
-      const tmpl = await ChecklistService.createTemplate(firm.id, { name: 'Pack', items: [{ label: 'P60', required: true, sortOrder: 0 }] })
+      const tmpl = await ChecklistService.createTemplate(firm.id, {
+        name: 'Pack',
+        items: [{ label: 'P60', required: true, sortOrder: 0 }],
+      })
       expect(tmpl.firmId).toBe(firm.id)
     })
   })
@@ -1487,7 +1597,10 @@ describe('ChecklistService', () => {
       const client = await createTestClient(firm.id)
       const tmpl = await createTestTemplate(firm.id)
       await ChecklistService.applyTemplateToClient(firm.id, client.id, tmpl.id)
-      const updated = await prisma.client.findUniqueOrThrow({ where: { id: client.id }, include: { items: true } })
+      const updated = await prisma.client.findUniqueOrThrow({
+        where: { id: client.id },
+        include: { items: true },
+      })
       expect(updated.items.length).toBe(tmpl.items.length)
     })
     it('preserves sort order from template', async () => {
@@ -1495,7 +1608,10 @@ describe('ChecklistService', () => {
       const client = await createTestClient(firm.id)
       const tmpl = await createTestTemplate(firm.id)
       await ChecklistService.applyTemplateToClient(firm.id, client.id, tmpl.id)
-      const updated = await prisma.client.findUniqueOrThrow({ where: { id: client.id }, include: { items: { orderBy: { sortOrder: 'asc' } } } })
+      const updated = await prisma.client.findUniqueOrThrow({
+        where: { id: client.id },
+        include: { items: { orderBy: { sortOrder: 'asc' } } },
+      })
       expect(updated.items[0].sortOrder).toBe(0)
     })
     it('throws NotFoundError when template belongs to another firm', async () => {
@@ -1503,7 +1619,9 @@ describe('ChecklistService', () => {
       const firmB = await createTestFirm()
       const client = await createTestClient(firmA.id)
       const tmpl = await createTestTemplate(firmB.id)
-      await expect(ChecklistService.applyTemplateToClient(firmA.id, client.id, tmpl.id)).rejects.toThrow(NotFoundError)
+      await expect(
+        ChecklistService.applyTemplateToClient(firmA.id, client.id, tmpl.id),
+      ).rejects.toThrow(NotFoundError)
     })
   })
 
@@ -1537,23 +1655,36 @@ describe('ChecklistService', () => {
 ```typescript
 // apps/api/src/routes/templates.test.ts
 import { makeAuthedRequest } from '../test/helpers'
-import { createTestFirm, createTestUser, createTestTemplate, createTestClient } from '../test/factories'
+import {
+  createTestFirm,
+  createTestUser,
+  createTestTemplate,
+  createTestClient,
+} from '../test/factories'
 
 describe('POST /templates', () => {
   it('creates template with nested items and returns 201', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).post('/templates').send({
-      name: 'SA Pack',
-      items: [{ label: 'P60', required: true, sortOrder: 0 }],
-    })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .post('/templates')
+      .send({
+        name: 'SA Pack',
+        items: [{ label: 'P60', required: true, sortOrder: 0 }],
+      })
     expect(res.status).toBe(201)
     expect(res.body.items).toHaveLength(1)
   })
   it('returns 400 for empty items', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).post('/templates').send({ name: 'Pack', items: [] })).status).toBe(400)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firm.id)
+          .post('/templates')
+          .send({ name: 'Pack', items: [] })
+      ).status,
+    ).toBe(400)
   })
 })
 
@@ -1587,7 +1718,13 @@ describe('POST /clients/:id/apply-template', () => {
     const user = await createTestUser(firmA.id)
     const client = await createTestClient(firmA.id)
     const tmpl = await createTestTemplate(firmB.id)
-    expect((await makeAuthedRequest(user.id, firmA.id).post(`/clients/${client.id}/apply-template`).send({ templateId: tmpl.id })).status).toBe(404)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firmA.id)
+          .post(`/clients/${client.id}/apply-template`)
+          .send({ templateId: tmpl.id })
+      ).status,
+    ).toBe(404)
   })
 })
 ```
@@ -1610,9 +1747,13 @@ const s3Mock = mockClient(S3Client)
 beforeEach(() => s3Mock.reset())
 
 const filePayload = (firmId: string, clientId: string, itemId: string) => ({
-  checklistItemId: itemId, firmId, clientId,
+  checklistItemId: itemId,
+  firmId,
+  clientId,
   buffer: Buffer.from('PDF content'),
-  filename: 'p60.pdf', mimeType: 'application/pdf', fileSize: 11,
+  filename: 'p60.pdf',
+  mimeType: 'application/pdf',
+  fileSize: 11,
 })
 
 describe('UploadService', () => {
@@ -1634,7 +1775,9 @@ describe('UploadService', () => {
       const item = await createTestChecklistItem(client.id)
       await UploadService.uploadFile(filePayload(firm.id, client.id, item.id))
       const key = s3Mock.commandCalls(PutObjectCommand)[0].args[0].input.Key!
-      expect(key).toMatch(new RegExp(`^uploads/${firm.id}/${client.id}/${item.id}/[a-z0-9-]+\\.pdf$`))
+      expect(key).toMatch(
+        new RegExp(`^uploads/${firm.id}/${client.id}/${item.id}/[a-z0-9-]+\\.pdf$`),
+      )
     })
 
     it('does not save to DB when S3 throws', async () => {
@@ -1642,7 +1785,9 @@ describe('UploadService', () => {
       const firm = await createTestFirm()
       const client = await createTestClient(firm.id)
       const item = await createTestChecklistItem(client.id)
-      await expect(UploadService.uploadFile(filePayload(firm.id, client.id, item.id))).rejects.toThrow('S3 down')
+      await expect(
+        UploadService.uploadFile(filePayload(firm.id, client.id, item.id)),
+      ).rejects.toThrow('S3 down')
       expect(await prisma.upload.count()).toBe(0)
     })
   })
@@ -1673,7 +1818,9 @@ describe('NotificationService', () => {
       const firm = await createTestFirm({ name: 'ACME CPA' })
       const client = await createTestClient(firm.id, { email: 'bob@client.com' })
       await NotificationService.sendPortalInvite(client.id)
-      expect(resend.emails.send).toHaveBeenCalledWith(expect.objectContaining({ to: 'bob@client.com' }))
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({ to: 'bob@client.com' }),
+      )
     })
     it('email body contains the portalToken', async () => {
       const { resend } = await import('../lib/resend')
@@ -1736,7 +1883,9 @@ vi.mock('../services/notification.service', () => ({
 }))
 vi.mock('../services/upload.service', () => ({
   UploadService: {
-    uploadFile: vi.fn().mockResolvedValue({ id: 'upload-1', filename: 'p60.pdf', storagePath: 's3://test' }),
+    uploadFile: vi
+      .fn()
+      .mockResolvedValue({ id: 'upload-1', filename: 'p60.pdf', storagePath: 's3://test' }),
   },
 }))
 
@@ -1777,7 +1926,10 @@ describe('POST /portal/:token/upload/:itemId', () => {
     const item = await createTestChecklistItem(client.id)
     const res = await api
       .post(`/portal/${client.portalToken}/upload/${item.id}`)
-      .attach('file', Buffer.from('data'), { filename: 'virus.exe', contentType: 'application/exe' })
+      .attach('file', Buffer.from('data'), {
+        filename: 'virus.exe',
+        contentType: 'application/exe',
+      })
     expect(res.status).toBe(400)
   })
   it('marks item complete and returns updated item on success', async () => {
@@ -1786,7 +1938,10 @@ describe('POST /portal/:token/upload/:itemId', () => {
     const item = await createTestChecklistItem(client.id)
     const res = await api
       .post(`/portal/${client.portalToken}/upload/${item.id}`)
-      .attach('file', Buffer.from('%PDF-1.4'), { filename: 'p60.pdf', contentType: 'application/pdf' })
+      .attach('file', Buffer.from('%PDF-1.4'), {
+        filename: 'p60.pdf',
+        contentType: 'application/pdf',
+      })
     expect(res.status).toBe(200)
     expect(res.body.item.completedAt).toBeDefined()
   })
@@ -1798,6 +1953,7 @@ describe('POST /portal/:token/upload/:itemId', () => {
 ---
 
 **PHASE 2 DONE WHEN:**
+
 - [ ] All task checkboxes above ticked
 - [ ] `npm test` — all tests green
 - [ ] `npm run test:coverage` — all thresholds pass
@@ -1838,20 +1994,22 @@ describe('ReminderService', () => {
       const recent = await createTestClient(firm.id, { status: 'in_progress' })
       await createTestChecklistItem(recent.id)
       const overdue = await ReminderService.getOverdueClients()
-      expect(overdue.map(c => c.id)).toContain(old.id)
-      expect(overdue.map(c => c.id)).not.toContain(recent.id)
+      expect(overdue.map((c) => c.id)).toContain(old.id)
+      expect(overdue.map((c) => c.id)).not.toContain(recent.id)
     })
     it('excludes archived clients', async () => {
       const firm = await createTestFirm()
       const archived = await createTestClient(firm.id, { createdAt: daysAgo(8), archived: true })
       await createTestChecklistItem(archived.id)
-      expect((await ReminderService.getOverdueClients()).map(c => c.id)).not.toContain(archived.id)
+      expect((await ReminderService.getOverdueClients()).map((c) => c.id)).not.toContain(
+        archived.id,
+      )
     })
     it('excludes complete clients', async () => {
       const firm = await createTestFirm()
       const done = await createTestClient(firm.id, { createdAt: daysAgo(8), status: 'complete' })
       await createTestChecklistItem(done.id)
-      expect((await ReminderService.getOverdueClients()).map(c => c.id)).not.toContain(done.id)
+      expect((await ReminderService.getOverdueClients()).map((c) => c.id)).not.toContain(done.id)
     })
   })
 
@@ -1881,7 +2039,9 @@ describe('POST /internal/reminders/send', () => {
     expect((await api.post('/internal/reminders/send')).status).toBe(401)
   })
   it('returns 401 with wrong secret', async () => {
-    expect((await api.post('/internal/reminders/send').set('x-cron-secret', 'wrong')).status).toBe(401)
+    expect((await api.post('/internal/reminders/send').set('x-cron-secret', 'wrong')).status).toBe(
+      401,
+    )
   })
   it('returns 200 with count when secret is correct', async () => {
     process.env.CRON_SECRET = 'test-cron-secret'
@@ -1959,12 +2119,20 @@ describe('PATCH /firms/me', () => {
   it('rejects invalid hex colour', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).patch('/firms/me').send({ accentColor: 'notahex' })).status).toBe(400)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firm.id)
+          .patch('/firms/me')
+          .send({ accentColor: 'notahex' })
+      ).status,
+    ).toBe(400)
   })
   it('accepts valid hex colour', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).patch('/firms/me').send({ accentColor: '#FF5733' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .patch('/firms/me')
+      .send({ accentColor: '#FF5733' })
     expect(res.status).toBe(200)
     expect(res.body.accentColor).toBe('#FF5733')
   })
@@ -2035,9 +2203,14 @@ test('completion screen appears after all required uploads', async ({ page }) =>
   const res = await page.request.post('http://localhost:4000/test/seed-client-with-one-item')
   const { portalToken, itemId } = await res.json()
   await page.goto(`/portal/${portalToken}`)
-  await page.locator('input[type="file"]').first().setInputFiles({
-    name: 'p60.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4'),
-  })
+  await page
+    .locator('input[type="file"]')
+    .first()
+    .setInputFiles({
+      name: 'p60.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from('%PDF-1.4'),
+    })
   await expect(page.getByText(/all done/i)).toBeVisible({ timeout: 10000 })
 })
 ```
@@ -2049,6 +2222,7 @@ test('completion screen appears after all required uploads', async ({ page }) =>
 ---
 
 **PHASE 3 DONE WHEN:**
+
 - [ ] All task checkboxes above ticked
 - [ ] `npm test` — all tests green
 - [ ] `npm run test:coverage` — all thresholds pass
@@ -2059,6 +2233,7 @@ test('completion screen appears after all required uploads', async ({ page }) =>
 # Deployment checklist
 
 ## Railway (API + DB)
+
 - [ ] Create Railway project, add service pointing to `apps/api`
 - [ ] Add managed Postgres plugin — copy `DATABASE_URL` to env vars
 - [ ] Set all env vars (copy from `.env.example`, fill real values)
@@ -2069,11 +2244,13 @@ test('completion screen appears after all required uploads', async ({ page }) =>
 - [ ] Verify: `curl https://api.yourdomain.com/health` → `{ "status": "ok" }`
 
 ## Vercel (web)
+
 - [ ] Create Vercel project from GitHub, root directory: `apps/web`
 - [ ] Set `NEXT_PUBLIC_API_URL=https://api.yourdomain.com`
 - [ ] Configure custom domain
 
 ## Production smoke test (do manually after deploy)
+
 - [ ] Sign in with Google → reaches dashboard
 - [ ] Create a client → appears in list
 - [ ] Create template → apply to client

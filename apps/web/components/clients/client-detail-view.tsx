@@ -33,7 +33,13 @@ interface Template {
   name: string
 }
 
-export function ClientDetailView({ client: initial, templates }: { client: Client; templates: Template[] }) {
+export function ClientDetailView({
+  client: initial,
+  templates,
+}: {
+  client: Client
+  templates: Template[]
+}) {
   const [client, setClient] = useState(initial)
   const [sending, setSending] = useState(false)
   const [reminding, setReminding] = useState(false)
@@ -43,9 +49,10 @@ export function ClientDetailView({ client: initial, templates }: { client: Clien
 
   const requiredItems = client.items.filter((i) => i.required)
   const completedRequired = requiredItems.filter((i) => i.completedAt !== null)
-  const progress = requiredItems.length > 0
-    ? Math.round((completedRequired.length / requiredItems.length) * 100)
-    : 100
+  const progress =
+    requiredItems.length > 0
+      ? Math.round((completedRequired.length / requiredItems.length) * 100)
+      : 100
 
   async function handleInvite() {
     setSending(true)
@@ -92,23 +99,30 @@ export function ClientDetailView({ client: initial, templates }: { client: Clien
   return (
     <div>
       <div className="mb-6">
-        <Link href="/clients" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+        <Link
+          href="/clients"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"
+        >
           <ArrowLeft className="h-3 w-3" /> All clients
         </Link>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold">{client.name}</h1>
-            <p className="text-muted-foreground">{client.email} · Tax year {client.taxYear}</p>
+            <p className="text-muted-foreground">
+              {client.email} · Tax year {client.taxYear}
+            </p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={copyPortalLink}>
               <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy portal link
             </Button>
             <Button variant="outline" size="sm" onClick={handleRemind} disabled={reminding}>
-              <Bell className="h-3.5 w-3.5 mr-1.5" />{reminding ? 'Sending…' : 'Remind'}
+              <Bell className="h-3.5 w-3.5 mr-1.5" />
+              {reminding ? 'Sending…' : 'Remind'}
             </Button>
             <Button size="sm" onClick={handleInvite} disabled={sending}>
-              <Send className="h-3.5 w-3.5 mr-1.5" />{sending ? 'Sending…' : 'Send invite'}
+              <Send className="h-3.5 w-3.5 mr-1.5" />
+              {sending ? 'Sending…' : 'Send invite'}
             </Button>
           </div>
         </div>
@@ -120,10 +134,15 @@ export function ClientDetailView({ client: initial, templates }: { client: Clien
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Checklist</CardTitle>
-                <div className="text-sm text-muted-foreground">{completedRequired.length}/{requiredItems.length} required</div>
+                <div className="text-sm text-muted-foreground">
+                  {completedRequired.length}/{requiredItems.length} required
+                </div>
               </div>
               <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${progress}%` }} />
+                <div
+                  className="h-full bg-primary rounded-full transition-all"
+                  style={{ width: `${progress}%` }}
+                />
               </div>
             </CardHeader>
             <CardContent className="divide-y">
@@ -141,16 +160,24 @@ export function ClientDetailView({ client: initial, templates }: { client: Clien
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm">{item.label}</div>
-                    {item.description && <div className="text-xs text-muted-foreground">{item.description}</div>}
+                    {item.description && (
+                      <div className="text-xs text-muted-foreground">{item.description}</div>
+                    )}
                     {item.uploads.length > 0 && (
                       <div className="mt-1 space-y-0.5">
                         {item.uploads.map((u) => (
-                          <div key={u.id} className="text-xs text-blue-600">{u.filename}</div>
+                          <div key={u.id} className="text-xs text-blue-600">
+                            {u.filename}
+                          </div>
                         ))}
                       </div>
                     )}
                   </div>
-                  {!item.required && <Badge variant="outline" className="text-xs">Optional</Badge>}
+                  {!item.required && (
+                    <Badge variant="outline" className="text-xs">
+                      Optional
+                    </Badge>
+                  )}
                 </div>
               ))}
             </CardContent>
@@ -163,7 +190,12 @@ export function ClientDetailView({ client: initial, templates }: { client: Clien
               <CardTitle className="text-base">Portal</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <a href={portalUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm text-blue-600 hover:underline">
+              <a
+                href={portalUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
+              >
                 Open client portal <ExternalLink className="h-3 w-3" />
               </a>
               <p className="text-xs text-muted-foreground break-all">{portalUrl}</p>

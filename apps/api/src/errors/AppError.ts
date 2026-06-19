@@ -2,7 +2,7 @@ export class AppError extends Error {
   constructor(
     public message: string,
     public statusCode: number,
-    public code: string
+    public code: string,
   ) {
     super(message)
     this.name = 'AppError'
@@ -34,7 +34,10 @@ export class PaymentRequiredError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, public fields?: Record<string, string[]>) {
+  constructor(
+    message: string,
+    public fields?: Record<string, string[]>,
+  ) {
     super(message, 400, 'VALIDATION_ERROR')
   }
 }

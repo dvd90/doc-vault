@@ -31,8 +31,12 @@ describe('database connectivity', () => {
 
   it('two clients get different portalTokens', async () => {
     const firm = await createTestFirm()
-    const c1 = await prisma.client.create({ data: { firmId: firm.id, name: 'A', email: 'a@t.com', taxYear: '2024-25' } })
-    const c2 = await prisma.client.create({ data: { firmId: firm.id, name: 'B', email: 'b@t.com', taxYear: '2024-25' } })
+    const c1 = await prisma.client.create({
+      data: { firmId: firm.id, name: 'A', email: 'a@t.com', taxYear: '2024-25' },
+    })
+    const c2 = await prisma.client.create({
+      data: { firmId: firm.id, name: 'B', email: 'b@t.com', taxYear: '2024-25' },
+    })
     expect(c1.portalToken).not.toBe(c2.portalToken)
   })
 })

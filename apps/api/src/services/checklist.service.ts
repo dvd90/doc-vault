@@ -60,7 +60,8 @@ export const ChecklistService = {
     const items = await prisma.checklistItem.findMany({ where: { clientId } })
     const required = items.filter((i) => i.required)
     const completed = required.filter((i) => i.completedAt !== null)
-    const percentage = required.length === 0 ? 100 : Math.round((completed.length / required.length) * 100)
+    const percentage =
+      required.length === 0 ? 100 : Math.round((completed.length / required.length) * 100)
     return { total: items.length, completed: completed.length, percentage }
   },
 }

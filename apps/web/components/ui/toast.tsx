@@ -11,7 +11,10 @@ const ToastViewport = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Viewport
     ref={ref}
-    className={cn('fixed bottom-4 right-4 z-[100] flex max-h-screen w-full max-w-[420px] flex-col gap-2', className)}
+    className={cn(
+      'fixed bottom-4 right-4 z-[100] flex max-h-screen w-full max-w-[420px] flex-col gap-2',
+      className,
+    )}
     {...props}
   />
 ))
@@ -19,7 +22,9 @@ ToastViewport.displayName = ToastPrimitive.Viewport.displayName
 
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitive.Root> & { variant?: 'default' | 'destructive' }
+  React.ComponentPropsWithoutRef<typeof ToastPrimitive.Root> & {
+    variant?: 'default' | 'destructive'
+  }
 >(({ className, variant = 'default', ...props }, ref) => (
   <ToastPrimitive.Root
     ref={ref}
@@ -27,7 +32,7 @@ const Toast = React.forwardRef<
       'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 shadow-lg transition-all',
       variant === 'destructive' && 'border-destructive bg-destructive text-destructive-foreground',
       variant === 'default' && 'border bg-background text-foreground',
-      className
+      className,
     )}
     {...props}
   />
@@ -46,7 +51,11 @@ const ToastDescription = React.forwardRef<
   React.ElementRef<typeof ToastPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitive.Description ref={ref} className={cn('text-sm opacity-90', className)} {...props} />
+  <ToastPrimitive.Description
+    ref={ref}
+    className={cn('text-sm opacity-90', className)}
+    {...props}
+  />
 ))
 ToastDescription.displayName = ToastPrimitive.Description.displayName
 
@@ -56,7 +65,10 @@ const ToastClose = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitive.Close
     ref={ref}
-    className={cn('absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100', className)}
+    className={cn(
+      'absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100',
+      className,
+    )}
     toast-close=""
     {...props}
   >

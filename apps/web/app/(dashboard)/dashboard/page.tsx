@@ -13,10 +13,13 @@ interface Stats {
 async function getStats(): Promise<Stats> {
   const cookieStore = cookies()
   const token = cookieStore.get('token')?.value
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/dashboard/stats`, {
-    headers: { Cookie: `token=${token}` },
-    cache: 'no-store',
-  })
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/dashboard/stats`,
+    {
+      headers: { Cookie: `token=${token}` },
+      cache: 'no-store',
+    },
+  )
   if (!res.ok) return { total: 0, notStarted: 0, inProgress: 0, complete: 0 }
   return res.json()
 }
@@ -32,17 +35,43 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={<Users className="h-5 w-5 text-blue-600" />} label="Total Clients" value={stats.total} bg="bg-blue-50" />
-        <StatCard icon={<AlertCircle className="h-5 w-5 text-gray-500" />} label="Not Started" value={stats.notStarted} bg="bg-gray-50" />
-        <StatCard icon={<Clock className="h-5 w-5 text-yellow-600" />} label="In Progress" value={stats.inProgress} bg="bg-yellow-50" />
-        <StatCard icon={<CheckCircle className="h-5 w-5 text-green-600" />} label="Complete" value={stats.complete} bg="bg-green-50" />
+        <StatCard
+          icon={<Users className="h-5 w-5 text-blue-600" />}
+          label="Total Clients"
+          value={stats.total}
+          bg="bg-blue-50"
+        />
+        <StatCard
+          icon={<AlertCircle className="h-5 w-5 text-gray-500" />}
+          label="Not Started"
+          value={stats.notStarted}
+          bg="bg-gray-50"
+        />
+        <StatCard
+          icon={<Clock className="h-5 w-5 text-yellow-600" />}
+          label="In Progress"
+          value={stats.inProgress}
+          bg="bg-yellow-50"
+        />
+        <StatCard
+          icon={<CheckCircle className="h-5 w-5 text-green-600" />}
+          label="Complete"
+          value={stats.complete}
+          bg="bg-green-50"
+        />
       </div>
 
       <div className="flex gap-4">
-        <Link href="/clients" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <Link
+          href="/clients"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
           <Users className="h-4 w-4" /> View all clients
         </Link>
-        <Link href="/clients?new=1" className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted">
+        <Link
+          href="/clients?new=1"
+          className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
+        >
           + Add client
         </Link>
       </div>
@@ -50,7 +79,17 @@ export default async function DashboardPage() {
   )
 }
 
-function StatCard({ icon, label, value, bg }: { icon: React.ReactNode; label: string; value: number; bg: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  bg,
+}: {
+  icon: React.ReactNode
+  label: string
+  value: number
+  bg: string
+}) {
   return (
     <Card>
       <CardHeader className="pb-2">
