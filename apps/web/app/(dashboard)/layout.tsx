@@ -54,7 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="p-3 border-t">
           <div className="text-sm font-medium truncate">{session.user.name}</div>
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/logout`}
+            href="/auth/logout"
             className="flex items-center gap-2 text-xs text-muted-foreground mt-1 hover:text-foreground"
           >
             <LogOut className="h-3 w-3" /> Sign out

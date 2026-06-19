@@ -8,6 +8,7 @@ beforeEach(async () => {
   await prisma.client.deleteMany()
   await prisma.user.deleteMany()
   await prisma.firm.deleteMany()
+  await prisma.magicLinkToken.deleteMany()
 })
 
 afterAll(async () => {

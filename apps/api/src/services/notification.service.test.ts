@@ -77,4 +77,21 @@ describe('NotificationService', () => {
       expect(call.html).toContain(client.portalToken)
     })
   })
+
+  describe('sendMagicLink', () => {
+    it('sends the login link to the given email', async () => {
+      const { resend } = await import('../lib/resend')
+      await NotificationService.sendMagicLink('login@firm.com', 'tok-abc')
+      const call = (resend.emails.send as ReturnType<typeof vi.fn>).mock.calls.at(-1)[0]
+      expect(call.to).toBe('login@firm.com')
+    })
+
+    it('embeds the token in the magic link callback URL', async () => {
+      const { resend } = await import('../lib/resend')
+      await NotificationService.sendMagicLink('login@firm.com', 'tok-xyz')
+      const call = (resend.emails.send as ReturnType<typeof vi.fn>).mock.calls.at(-1)[0]
+      expect(call.html).toContain('tok-xyz')
+      expect(call.html).toContain('/auth/magic-link/callback?token=tok-xyz')
+    })
+  })
 })
