@@ -17,9 +17,21 @@ export default async function AdminOverviewPage() {
       <h1 className="text-2xl font-bold mb-6">Platform overview</h1>
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-        <StatCard icon={<Building2 className="h-5 w-5 text-muted-foreground" />} label="Total firms" value={stats.totalFirms} />
-        <StatCard icon={<Users className="h-5 w-5 text-muted-foreground" />} label="Total clients" value={stats.totalClients} />
-        <StatCard icon={<Upload className="h-5 w-5 text-muted-foreground" />} label="Total uploads" value={stats.totalUploads} />
+        <StatCard
+          icon={<Building2 className="h-5 w-5 text-muted-foreground" />}
+          label="Total firms"
+          value={stats.totalFirms}
+        />
+        <StatCard
+          icon={<Users className="h-5 w-5 text-muted-foreground" />}
+          label="Total clients"
+          value={stats.totalClients}
+        />
+        <StatCard
+          icon={<Upload className="h-5 w-5 text-muted-foreground" />}
+          label="Total uploads"
+          value={stats.totalUploads}
+        />
         <StatCard
           icon={<Activity className="h-5 w-5 text-muted-foreground" />}
           label="Active subscriptions"

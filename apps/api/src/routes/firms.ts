@@ -69,5 +69,5 @@ firmsRouter.post(
     } catch (err) {
       next(err)
     }
-  }
+  },
 )

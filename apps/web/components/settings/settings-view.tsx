@@ -67,9 +67,12 @@ export function SettingsView({ firm: initial }: { firm: Firm | null }) {
     }
   }
 
-  const subVariant = firm.subscriptionStatus === 'active' ? 'success'
-    : firm.subscriptionStatus === 'trial' ? 'warning'
-    : 'destructive'
+  const subVariant =
+    firm.subscriptionStatus === 'active'
+      ? 'success'
+      : firm.subscriptionStatus === 'trial'
+        ? 'warning'
+        : 'destructive'
 
   return (
     <div className="max-w-2xl">
@@ -84,7 +87,12 @@ export function SettingsView({ firm: initial }: { firm: Firm | null }) {
             <form onSubmit={handleSave} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="firmName">Firm name</Label>
-                <Input id="firmName" value={name} onChange={(e) => setName(e.target.value)} required />
+                <Input
+                  id="firmName"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="accentColor">Accent colour</Label>
@@ -104,7 +112,9 @@ export function SettingsView({ firm: initial }: { firm: Firm | null }) {
                   />
                 </div>
               </div>
-              <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save changes'}</Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? 'Saving…' : 'Save changes'}
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -122,7 +132,13 @@ export function SettingsView({ firm: initial }: { firm: Firm | null }) {
                 <span>{uploading ? 'Uploading…' : 'Upload logo'}</span>
               </Button>
             </Label>
-            <input id="logo" type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+            <input
+              id="logo"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleLogoUpload}
+            />
           </CardContent>
         </Card>
 
@@ -147,7 +163,9 @@ export function SettingsView({ firm: initial }: { firm: Firm | null }) {
                 Manage billing
               </Button>
             ) : (
-              <a href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/billing/checkout`}>
+              <a
+                href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/billing/checkout`}
+              >
                 <Button size="sm">Subscribe — $49/month</Button>
               </a>
             )}

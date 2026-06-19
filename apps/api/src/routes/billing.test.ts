@@ -2,7 +2,9 @@ import { vi } from 'vitest'
 
 vi.mock('../lib/stripe', () => ({
   stripe: {
-    checkout: { sessions: { create: vi.fn().mockResolvedValue({ url: 'https://stripe.com/pay' }) } },
+    checkout: {
+      sessions: { create: vi.fn().mockResolvedValue({ url: 'https://stripe.com/pay' }) },
+    },
     customers: { create: vi.fn().mockResolvedValue({ id: 'cus_test' }) },
     webhooks: { constructEvent: vi.fn() },
   },

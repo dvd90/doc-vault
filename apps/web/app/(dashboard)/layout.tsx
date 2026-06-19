@@ -12,12 +12,18 @@ async function getSession() {
   if (!token) return null
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/me`, {
-      headers: { Cookie: `token=${token}` },
-      cache: 'no-store',
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/me`,
+      {
+        headers: { Cookie: `token=${token}` },
+        cache: 'no-store',
+      },
+    )
     if (!res.ok) return null
-    return res.json() as Promise<{ user: { name: string; email: string; avatarUrl: string | null }; firm: { name: string } }>
+    return res.json() as Promise<{
+      user: { name: string; email: string; avatarUrl: string | null }
+      firm: { name: string }
+    }>
   } catch {
     return null
   }
@@ -35,13 +41,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <p className="text-xs text-muted-foreground mt-0.5 truncate">{session.firm.name}</p>
         </div>
         <nav className="flex-1 p-3 space-y-1">
-          <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />}>Dashboard</NavLink>
-          <NavLink href="/clients" icon={<Users className="h-4 w-4" />}>Clients</NavLink>
-          <NavLink href="/settings" icon={<Settings className="h-4 w-4" />}>Settings</NavLink>
+          <NavLink href="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />}>
+            Dashboard
+          </NavLink>
+          <NavLink href="/clients" icon={<Users className="h-4 w-4" />}>
+            Clients
+          </NavLink>
+          <NavLink href="/settings" icon={<Settings className="h-4 w-4" />}>
+            Settings
+          </NavLink>
         </nav>
         <div className="p-3 border-t">
           <div className="text-sm font-medium truncate">{session.user.name}</div>
-          <a href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/logout`} className="flex items-center gap-2 text-xs text-muted-foreground mt-1 hover:text-foreground">
+          <a
+            href={`${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/logout`}
+            className="flex items-center gap-2 text-xs text-muted-foreground mt-1 hover:text-foreground"
+          >
             <LogOut className="h-3 w-3" /> Sign out
           </a>
         </div>
@@ -51,7 +66,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   )
 }
 
-function NavLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
+function NavLink({
+  href,
+  icon,
+  children,
+}: {
+  href: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
   return (
     <Link
       href={href}

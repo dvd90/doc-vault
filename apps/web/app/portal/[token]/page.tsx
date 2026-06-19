@@ -20,7 +20,7 @@ interface PortalData {
 async function getPortal(token: string): Promise<PortalData | null> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/portal/${token}`,
-    { cache: 'no-store' }
+    { cache: 'no-store' },
   )
   if (res.status === 404) return null
   if (!res.ok) throw new Error('Failed to load portal')
@@ -32,11 +32,6 @@ export default async function PortalPage({ params }: { params: { token: string }
   if (!data) notFound()
 
   return (
-    <PortalView
-      client={data.client}
-      firm={data.firm}
-      items={data.items}
-      token={params.token}
-    />
+    <PortalView client={data.client} firm={data.firm} items={data.items} token={params.token} />
   )
 }

@@ -13,7 +13,9 @@ describe('requireAuth', () => {
   })
 
   it('returns 401 for expired JWT', async () => {
-    const expired = jwt.sign({ userId: 'u', firmId: 'f' }, process.env.JWT_SECRET!, { expiresIn: '-1s' })
+    const expired = jwt.sign({ userId: 'u', firmId: 'f' }, process.env.JWT_SECRET!, {
+      expiresIn: '-1s',
+    })
     const res = await api.get('/test/protected').set('Cookie', `token=${expired}`)
     expect(res.status).toBe(401)
   })

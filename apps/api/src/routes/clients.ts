@@ -62,13 +62,13 @@ clientsRouter.post(
       const client = await ChecklistService.applyTemplateToClient(
         req.user!.firmId,
         req.params.id,
-        req.body.templateId
+        req.body.templateId,
       )
       res.json(client)
     } catch (err) {
       next(err)
     }
-  }
+  },
 )
 
 clientsRouter.post('/:id/invite', async (req, res, next) => {

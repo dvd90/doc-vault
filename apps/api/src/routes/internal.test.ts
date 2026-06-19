@@ -3,7 +3,13 @@ vi.mock('../services/reminder.service', () => ({
   ReminderService: { sendPendingReminders: vi.fn().mockResolvedValue(3) },
 }))
 import { api } from '../test/helpers'
-import { createTestFirm, createTestUser, createTestClient, createTestChecklistItem, createTestUpload } from '../test/factories'
+import {
+  createTestFirm,
+  createTestUser,
+  createTestClient,
+  createTestChecklistItem,
+  createTestUpload,
+} from '../test/factories'
 
 const adminHeader = () => ({ 'x-admin-secret': process.env.ADMIN_SECRET ?? 'test-admin-secret' })
 
@@ -12,7 +18,9 @@ describe('POST /internal/reminders/send', () => {
     expect((await api.post('/internal/reminders/send')).status).toBe(401)
   })
   it('returns 401 with wrong secret', async () => {
-    expect((await api.post('/internal/reminders/send').set('x-cron-secret', 'wrong')).status).toBe(401)
+    expect((await api.post('/internal/reminders/send').set('x-cron-secret', 'wrong')).status).toBe(
+      401,
+    )
   })
   it('returns 200 with count when secret is correct', async () => {
     process.env.CRON_SECRET = 'test-cron-secret'
@@ -31,7 +39,7 @@ describe('GET /internal/admin/stats', () => {
   })
   it('returns platform-wide stats', async () => {
     const firmA = await createTestFirm({ subscriptionStatus: 'active' })
-    const firmB = await createTestFirm({ subscriptionStatus: 'trial' })
+    await createTestFirm({ subscriptionStatus: 'trial' })
     await createTestUser(firmA.id)
     const clientA = await createTestClient(firmA.id)
     const item = await createTestChecklistItem(clientA.id)
@@ -70,7 +78,9 @@ describe('GET /internal/admin/firms/:id', () => {
     expect((await api.get('/internal/admin/firms/some-id')).status).toBe(401)
   })
   it('returns 404 for unknown firm', async () => {
-    expect((await api.get('/internal/admin/firms/does-not-exist').set(adminHeader())).status).toBe(404)
+    expect((await api.get('/internal/admin/firms/does-not-exist').set(adminHeader())).status).toBe(
+      404,
+    )
   })
   it('returns firm with clients and uploads', async () => {
     const firm = await createTestFirm({ name: 'Detail CPA' })

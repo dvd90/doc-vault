@@ -7,18 +7,34 @@ describe('ClientService', () => {
   describe('create', () => {
     it('creates client scoped to firm', async () => {
       const firm = await createTestFirm()
-      const client = await ClientService.create(firm.id, { name: 'Alice', email: 'a@t.com', taxYear: '2024-25' })
+      const client = await ClientService.create(firm.id, {
+        name: 'Alice',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
       expect(client.firmId).toBe(firm.id)
     })
     it('sets status to not_started', async () => {
       const firm = await createTestFirm()
-      const client = await ClientService.create(firm.id, { name: 'A', email: 'a@t.com', taxYear: '2024-25' })
+      const client = await ClientService.create(firm.id, {
+        name: 'A',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
       expect(client.status).toBe('not_started')
     })
     it('auto-generates unique portalTokens', async () => {
       const firm = await createTestFirm()
-      const c1 = await ClientService.create(firm.id, { name: 'A', email: 'a@t.com', taxYear: '2024-25' })
-      const c2 = await ClientService.create(firm.id, { name: 'B', email: 'b@t.com', taxYear: '2024-25' })
+      const c1 = await ClientService.create(firm.id, {
+        name: 'A',
+        email: 'a@t.com',
+        taxYear: '2024-25',
+      })
+      const c2 = await ClientService.create(firm.id, {
+        name: 'B',
+        email: 'b@t.com',
+        taxYear: '2024-25',
+      })
       expect(c1.portalToken).not.toBe(c2.portalToken)
     })
   })
@@ -77,7 +93,9 @@ describe('ClientService', () => {
       const firmA = await createTestFirm()
       const firmB = await createTestFirm()
       const client = await createTestClient(firmA.id)
-      await expect(ClientService.update(firmB.id, client.id, { name: 'X' })).rejects.toThrow(NotFoundError)
+      await expect(ClientService.update(firmB.id, client.id, { name: 'X' })).rejects.toThrow(
+        NotFoundError,
+      )
     })
   })
 

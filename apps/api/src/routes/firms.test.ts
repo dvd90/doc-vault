@@ -17,12 +17,20 @@ describe('PATCH /firms/me', () => {
   it('rejects invalid hex colour', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    expect((await makeAuthedRequest(user.id, firm.id).patch('/firms/me').send({ accentColor: 'notahex' })).status).toBe(400)
+    expect(
+      (
+        await makeAuthedRequest(user.id, firm.id)
+          .patch('/firms/me')
+          .send({ accentColor: 'notahex' })
+      ).status,
+    ).toBe(400)
   })
   it('accepts valid hex colour', async () => {
     const firm = await createTestFirm()
     const user = await createTestUser(firm.id)
-    const res = await makeAuthedRequest(user.id, firm.id).patch('/firms/me').send({ accentColor: '#FF5733' })
+    const res = await makeAuthedRequest(user.id, firm.id)
+      .patch('/firms/me')
+      .send({ accentColor: '#FF5733' })
     expect(res.status).toBe(200)
     expect(res.body.accentColor).toBe('#FF5733')
   })

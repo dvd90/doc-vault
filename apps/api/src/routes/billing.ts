@@ -37,14 +37,17 @@ billingRouter.post('/webhook', async (req, res, next) => {
     event = stripe.webhooks.constructEvent(
       req.body as Buffer,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET ?? 'whsec_placeholder'
+      process.env.STRIPE_WEBHOOK_SECRET ?? 'whsec_placeholder',
     )
   } catch (err) {
     return res.status(400).json({ code: 'BAD_REQUEST', message: 'Invalid signature' })
   }
 
   try {
-    await BillingService.handleWebhookEvent(event.type, event.data.object as Record<string, unknown>)
+    await BillingService.handleWebhookEvent(
+      event.type,
+      event.data.object as Record<string, unknown>,
+    )
     res.json({ received: true })
   } catch (err) {
     next(err)

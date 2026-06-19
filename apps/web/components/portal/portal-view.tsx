@@ -43,8 +43,10 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
         const body = await res.json().catch(() => ({}))
         throw new Error(body.message ?? 'Upload failed')
       }
-      const { item } = await res.json() as { item: ChecklistItem }
-      setItems((prev) => prev.map((i) => (i.id === itemId ? { ...i, completedAt: item.completedAt } : i)))
+      const { item } = (await res.json()) as { item: ChecklistItem }
+      setItems((prev) =>
+        prev.map((i) => (i.id === itemId ? { ...i, completedAt: item.completedAt } : i)),
+      )
       toast({ title: 'File uploaded' })
     } catch (err) {
       toast({ title: err instanceof Error ? err.message : 'Upload failed', variant: 'destructive' })
@@ -55,11 +57,18 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
 
   return (
     <div className="min-h-screen bg-muted/20">
-      <header className="bg-white border-b" style={{ borderTopColor: firm.accentColor, borderTopWidth: 4 }}>
+      <header
+        className="bg-white border-b"
+        style={{ borderTopColor: firm.accentColor, borderTopWidth: 4 }}
+      >
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
-          {firm.logoUrl && <img src={firm.logoUrl} alt={firm.name} className="h-8 object-contain" />}
+          {firm.logoUrl && (
+            <img src={firm.logoUrl} alt={firm.name} className="h-8 object-contain" />
+          )}
           <div>
-            <div className="font-semibold" style={{ color: firm.accentColor }}>{firm.name}</div>
+            <div className="font-semibold" style={{ color: firm.accentColor }}>
+              {firm.name}
+            </div>
             <div className="text-xs text-muted-foreground">Secure document portal</div>
           </div>
         </div>
@@ -70,13 +79,17 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
           <div className="text-center py-16">
             <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">All done!</h2>
-            <p className="text-muted-foreground">Thank you, {client.name}. Your documents have been received by {firm.name}.</p>
+            <p className="text-muted-foreground">
+              Thank you, {client.name}. Your documents have been received by {firm.name}.
+            </p>
           </div>
         ) : (
           <>
             <div className="mb-6">
               <h1 className="text-2xl font-bold">Upload your documents</h1>
-              <p className="text-muted-foreground mt-1">Hi {client.name}, please upload the following documents for {firm.name}.</p>
+              <p className="text-muted-foreground mt-1">
+                Hi {client.name}, please upload the following documents for {firm.name}.
+              </p>
             </div>
 
             <div className="space-y-3">
@@ -91,7 +104,11 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{item.label}</span>
-                        {!item.required && <Badge variant="outline" className="text-xs">Optional</Badge>}
+                        {!item.required && (
+                          <Badge variant="outline" className="text-xs">
+                            Optional
+                          </Badge>
+                        )}
                       </div>
                       {item.description && (
                         <p className="text-sm text-muted-foreground mt-0.5">{item.description}</p>
@@ -114,12 +131,20 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
                             if (file) handleUpload(item.id, file)
                           }}
                         />
-                        <Button variant="outline" size="sm" disabled={uploading === item.id} asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={uploading === item.id}
+                          asChild
+                        >
                           <span>
                             {uploading === item.id ? (
                               <Loader2 className="h-3.5 w-3.5 animate-spin" />
                             ) : (
-                              <><Upload className="h-3.5 w-3.5 mr-1.5" />Upload</>
+                              <>
+                                <Upload className="h-3.5 w-3.5 mr-1.5" />
+                                Upload
+                              </>
                             )}
                           </span>
                         </Button>

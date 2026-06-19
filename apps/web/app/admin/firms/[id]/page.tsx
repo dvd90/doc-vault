@@ -75,7 +75,10 @@ export default async function AdminFirmDetailPage({ params }: { params: { id: st
 
   return (
     <div className="max-w-4xl">
-      <Link href="/admin/firms" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+      <Link
+        href="/admin/firms"
+        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
         <ChevronLeft className="h-4 w-4" /> All firms
       </Link>
 
@@ -84,9 +87,13 @@ export default async function AdminFirmDetailPage({ params }: { params: { id: st
         <div>
           <h1 className="text-2xl font-bold">{firm.name}</h1>
           <div className="flex items-center gap-2 mt-0.5">
-            <Badge variant={statusVariant[firm.subscriptionStatus] ?? 'outline'}>{firm.subscriptionStatus}</Badge>
+            <Badge variant={statusVariant[firm.subscriptionStatus] ?? 'outline'}>
+              {firm.subscriptionStatus}
+            </Badge>
             {firm.stripeCustomerId && (
-              <span className="text-xs text-muted-foreground font-mono">{firm.stripeCustomerId}</span>
+              <span className="text-xs text-muted-foreground font-mono">
+                {firm.stripeCustomerId}
+              </span>
             )}
             {firm.trialEndsAt && firm.subscriptionStatus === 'trial' && (
               <span className="text-xs text-muted-foreground">
@@ -176,7 +183,11 @@ export default async function AdminFirmDetailPage({ params }: { params: { id: st
                           ) : (
                             <Circle className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                           )}
-                          <span className={item.completedAt ? 'text-foreground' : 'text-muted-foreground'}>
+                          <span
+                            className={
+                              item.completedAt ? 'text-foreground' : 'text-muted-foreground'
+                            }
+                          >
                             {item.label}
                           </span>
                           {item.uploads.length > 0 && (

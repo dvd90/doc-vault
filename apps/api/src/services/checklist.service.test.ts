@@ -1,6 +1,11 @@
 import { ChecklistService } from './checklist.service'
 import { prisma } from '../lib/prisma'
-import { createTestFirm, createTestClient, createTestTemplate, createTestChecklistItem } from '../test/factories'
+import {
+  createTestFirm,
+  createTestClient,
+  createTestTemplate,
+  createTestChecklistItem,
+} from '../test/factories'
 import { NotFoundError } from '../errors/AppError'
 
 describe('ChecklistService', () => {
@@ -9,7 +14,10 @@ describe('ChecklistService', () => {
       const firm = await createTestFirm()
       const tmpl = await ChecklistService.createTemplate(firm.id, {
         name: 'SA Pack',
-        items: [{ label: 'P60', required: true, sortOrder: 0 }, { label: 'Bank', required: true, sortOrder: 1 }],
+        items: [
+          { label: 'P60', required: true, sortOrder: 0 },
+          { label: 'Bank', required: true, sortOrder: 1 },
+        ],
       })
       expect(tmpl.items).toHaveLength(2)
       expect(tmpl.items[0].label).toBe('P60')
@@ -17,7 +25,10 @@ describe('ChecklistService', () => {
     })
     it('scopes template to firm', async () => {
       const firm = await createTestFirm()
-      const tmpl = await ChecklistService.createTemplate(firm.id, { name: 'Pack', items: [{ label: 'P60', required: true, sortOrder: 0 }] })
+      const tmpl = await ChecklistService.createTemplate(firm.id, {
+        name: 'Pack',
+        items: [{ label: 'P60', required: true, sortOrder: 0 }],
+      })
       expect(tmpl.firmId).toBe(firm.id)
     })
   })
@@ -28,7 +39,10 @@ describe('ChecklistService', () => {
       const client = await createTestClient(firm.id)
       const tmpl = await createTestTemplate(firm.id)
       await ChecklistService.applyTemplateToClient(firm.id, client.id, tmpl.id)
-      const updated = await prisma.client.findUniqueOrThrow({ where: { id: client.id }, include: { items: true } })
+      const updated = await prisma.client.findUniqueOrThrow({
+        where: { id: client.id },
+        include: { items: true },
+      })
       expect(updated.items.length).toBe(tmpl.items.length)
     })
     it('preserves sort order from template', async () => {
@@ -36,7 +50,10 @@ describe('ChecklistService', () => {
       const client = await createTestClient(firm.id)
       const tmpl = await createTestTemplate(firm.id)
       await ChecklistService.applyTemplateToClient(firm.id, client.id, tmpl.id)
-      const updated = await prisma.client.findUniqueOrThrow({ where: { id: client.id }, include: { items: { orderBy: { sortOrder: 'asc' } } } })
+      const updated = await prisma.client.findUniqueOrThrow({
+        where: { id: client.id },
+        include: { items: { orderBy: { sortOrder: 'asc' } } },
+      })
       expect(updated.items[0].sortOrder).toBe(0)
     })
     it('throws NotFoundError when template belongs to another firm', async () => {
@@ -44,7 +61,9 @@ describe('ChecklistService', () => {
       const firmB = await createTestFirm()
       const client = await createTestClient(firmA.id)
       const tmpl = await createTestTemplate(firmB.id)
-      await expect(ChecklistService.applyTemplateToClient(firmA.id, client.id, tmpl.id)).rejects.toThrow(NotFoundError)
+      await expect(
+        ChecklistService.applyTemplateToClient(firmA.id, client.id, tmpl.id),
+      ).rejects.toThrow(NotFoundError)
     })
   })
 
@@ -64,14 +83,18 @@ describe('ChecklistService', () => {
     it('updates template name', async () => {
       const firm = await createTestFirm()
       const tmpl = await createTestTemplate(firm.id)
-      const updated = await ChecklistService.updateTemplate(firm.id, tmpl.id, { name: 'Updated Name' })
+      const updated = await ChecklistService.updateTemplate(firm.id, tmpl.id, {
+        name: 'Updated Name',
+      })
       expect(updated.name).toBe('Updated Name')
     })
     it('throws NotFoundError when template belongs to another firm', async () => {
       const firmA = await createTestFirm()
       const firmB = await createTestFirm()
       const tmpl = await createTestTemplate(firmA.id)
-      await expect(ChecklistService.updateTemplate(firmB.id, tmpl.id, { name: 'X' })).rejects.toThrow(NotFoundError)
+      await expect(
+        ChecklistService.updateTemplate(firmB.id, tmpl.id, { name: 'X' }),
+      ).rejects.toThrow(NotFoundError)
     })
   })
 
@@ -86,7 +109,9 @@ describe('ChecklistService', () => {
       const firmA = await createTestFirm()
       const firmB = await createTestFirm()
       const tmpl = await createTestTemplate(firmA.id)
-      await expect(ChecklistService.deleteTemplate(firmB.id, tmpl.id)).rejects.toThrow(NotFoundError)
+      await expect(ChecklistService.deleteTemplate(firmB.id, tmpl.id)).rejects.toThrow(
+        NotFoundError,
+      )
     })
   })
 

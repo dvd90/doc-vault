@@ -36,7 +36,10 @@ export async function createTestClient(firmId: string, overrides: Record<string,
   })
 }
 
-export async function createTestChecklistItem(clientId: string, overrides: Record<string, unknown> = {}) {
+export async function createTestChecklistItem(
+  clientId: string,
+  overrides: Record<string, unknown> = {},
+) {
   return prisma.checklistItem.create({
     data: {
       clientId,
@@ -66,7 +69,10 @@ export async function createTestTemplate(firmId: string, overrides: Record<strin
   })
 }
 
-export async function createTestUpload(checklistItemId: string, overrides: Record<string, unknown> = {}) {
+export async function createTestUpload(
+  checklistItemId: string,
+  overrides: Record<string, unknown> = {},
+) {
   return prisma.upload.create({
     data: {
       checklistItemId,

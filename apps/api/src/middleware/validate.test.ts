@@ -7,11 +7,15 @@ const schema = z.object({
   email: z.string().email(),
 })
 
-function run(body: unknown): Promise<{ status?: number; body?: unknown; next: boolean; reqBody?: unknown }> {
+function run(
+  body: unknown,
+): Promise<{ status?: number; body?: unknown; next: boolean; reqBody?: unknown }> {
   return new Promise((resolve) => {
     const req = { body } as Request
     const res = {
-      status: (code: number) => ({ json: (data: unknown) => resolve({ status: code, body: data, next: false }) }),
+      status: (code: number) => ({
+        json: (data: unknown) => resolve({ status: code, body: data, next: false }),
+      }),
     } as unknown as Response
     const next = () => resolve({ next: true, reqBody: req.body })
     validate(schema)(req, res, next as NextFunction)
