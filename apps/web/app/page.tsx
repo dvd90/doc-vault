@@ -121,8 +121,7 @@ function Hero({ signup }: { signup: string }) {
           </div>
 
           <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-[3.6rem]">
-            Stop chasing clients{' '}
-            <br className="hidden sm:block" />
+            Stop chasing clients <br className="hidden sm:block" />
             for{' '}
             <span className="animate-gradient-pan bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-[length:200%_auto] bg-clip-text text-transparent">
               documents
@@ -461,9 +460,7 @@ function HowItWorks() {
           <span className="mb-4 inline-block rounded-full bg-violet-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-violet-600">
             How it works
           </span>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Live in under 5 minutes
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Live in under 5 minutes</h2>
           <p className="mt-4 text-lg text-slate-600">
             No onboarding calls. No setup fees. Sign in with Google and send your first checklist
             today.
@@ -618,9 +615,7 @@ function Testimonials() {
           <span className="mb-4 inline-block rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-600">
             Testimonials
           </span>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Loved by busy practices
-          </h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Loved by busy practices</h2>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
@@ -630,9 +625,7 @@ function Testimonials() {
               className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/70 hover:shadow-lg hover:shadow-blue-50"
             >
               <Quote className="mb-3 h-6 w-6 text-blue-200 transition-colors group-hover:text-blue-400" />
-              <p className="flex-1 text-sm leading-relaxed text-slate-700">
-                &ldquo;{body}&rdquo;
-              </p>
+              <p className="flex-1 text-sm leading-relaxed text-slate-700">&ldquo;{body}&rdquo;</p>
               <div className="mt-4 flex items-center gap-0.5">
                 {Array.from({ length: stars }).map((_, i) => (
                   <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />

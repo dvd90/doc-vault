@@ -37,19 +37,34 @@
 /* ─── Landing-page custom animations ─────────────────────────────────── */
 
 @keyframes blob {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(30px, -25px) scale(1.06); }
-  66%       { transform: translate(-20px, 20px) scale(0.94); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -25px) scale(1.06);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.94);
+  }
 }
 
 @keyframes shimmer-sweep {
-  0%   { left: -120%; }
-  100% { left: 200%; }
+  0% {
+    left: -120%;
+  }
+  100% {
+    left: 200%;
+  }
 }
 
 @keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @layer utilities {
@@ -77,12 +92,7 @@
     left: -120%;
     width: 50%;
     height: 140%;
-    background: linear-gradient(
-      105deg,
-      transparent,
-      rgba(255, 255, 255, 0.22),
-      transparent
-    );
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.22), transparent);
     transform: skewX(-20deg);
     animation: shimmer-sweep 3.5s ease-in-out infinite;
   }
