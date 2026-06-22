@@ -14,7 +14,7 @@ export const ClientService = {
   async findById(firmId: string, id: string) {
     const client = await prisma.client.findFirst({
       where: { id, firmId },
-      include: { items: { orderBy: { sortOrder: 'asc' } } },
+      include: { items: { orderBy: { sortOrder: 'asc' }, include: { uploads: true } } },
     })
     if (!client) throw new NotFoundError('Client')
     return client
