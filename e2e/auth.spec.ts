@@ -24,3 +24,12 @@ test('unauthenticated user is redirected to login when visiting /dashboard', asy
   await page.goto('/dashboard')
   await expect(page).toHaveURL(/login/)
 })
+
+test('signing out redirects to the landing page', async ({ page }) => {
+  const res = await page.request.post('http://localhost:4000/test/seed-user')
+  const { token } = await res.json()
+  await page.context().addCookies([{ name: 'token', value: token, domain: 'localhost', path: '/' }])
+  await page.goto('/dashboard')
+  await page.click('text=Sign out')
+  await expect(page).toHaveURL('http://localhost:3000/')
+})

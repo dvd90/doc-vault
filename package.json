@@ -11,11 +11,13 @@
     "test:e2e": "playwright test",
     "lint": "npm run lint --workspaces --if-present",
     "format:check": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "concurrently": "^8.2.0",
+    "husky": "^9.1.7",
     "prettier": "^3.8.4",
     "typescript": "^5.4.0"
   }
