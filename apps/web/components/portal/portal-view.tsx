@@ -74,9 +74,7 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
             <div className="font-semibold text-slate-900" style={{ color: firm.accentColor }}>
               {firm.name}
             </div>
-            <div className="text-xs text-slate-500">
-              {client.name} · Secure document portal
-            </div>
+            <div className="text-xs text-slate-500">{client.name} · Secure document portal</div>
           </div>
         </div>
       </header>
@@ -157,12 +155,7 @@ export function PortalView({ client, firm, items: initial, token }: Props) {
                           if (file) handleUpload(item.id, file)
                         }}
                       />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={uploading === item.id}
-                        asChild
-                      >
+                      <Button variant="outline" size="sm" disabled={uploading === item.id} asChild>
                         <span>
                           {uploading === item.id ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
