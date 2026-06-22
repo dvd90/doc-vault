@@ -15,9 +15,7 @@ test('Get started CTA on landing page navigates to /login', async ({ page }) => 
 test('logged-in user visiting /login is redirected to /dashboard', async ({ page }) => {
   const res = await page.request.post('http://localhost:4000/test/seed-user')
   const { token } = await res.json()
-  await page.context().addCookies([
-    { name: 'token', value: token, domain: 'localhost', path: '/' },
-  ])
+  await page.context().addCookies([{ name: 'token', value: token, domain: 'localhost', path: '/' }])
   await page.goto('/login')
   await expect(page).toHaveURL('/dashboard')
 })

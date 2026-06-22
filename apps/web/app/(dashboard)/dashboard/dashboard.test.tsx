@@ -4,9 +4,30 @@ import { RecentClientsTable } from './recent-clients-table'
 import { OnboardingSteps } from './onboarding-steps'
 
 const mockClients = [
-  { id: 'c1', name: 'Alice Smith', email: 'alice@test.com', taxYear: '2024-25', status: 'in_progress', createdAt: new Date().toISOString() },
-  { id: 'c2', name: 'Bob Jones', email: 'bob@test.com', taxYear: '2023-24', status: 'not_started', createdAt: new Date().toISOString() },
-  { id: 'c3', name: 'Carol White', email: 'carol@test.com', taxYear: '2024-25', status: 'complete', createdAt: new Date().toISOString() },
+  {
+    id: 'c1',
+    name: 'Alice Smith',
+    email: 'alice@test.com',
+    taxYear: '2024-25',
+    status: 'in_progress',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'c2',
+    name: 'Bob Jones',
+    email: 'bob@test.com',
+    taxYear: '2023-24',
+    status: 'not_started',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'c3',
+    name: 'Carol White',
+    email: 'carol@test.com',
+    taxYear: '2024-25',
+    status: 'complete',
+    createdAt: new Date().toISOString(),
+  },
 ]
 
 describe('RecentClientsTable', () => {

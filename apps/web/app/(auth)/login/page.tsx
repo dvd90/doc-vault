@@ -19,11 +19,7 @@ async function isAuthenticated(): Promise<boolean> {
   }
 }
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: { error?: string }
-}) {
+export default async function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
   if (await isAuthenticated()) redirect('/dashboard')
 
   const errorMessage =

@@ -3,9 +3,7 @@ import { test, expect } from '@playwright/test'
 test('creating a client redirects to the client detail page', async ({ page }) => {
   const res = await page.request.post('http://localhost:4000/test/seed-user')
   const { token } = await res.json()
-  await page.context().addCookies([
-    { name: 'token', value: token, domain: 'localhost', path: '/' },
-  ])
+  await page.context().addCookies([{ name: 'token', value: token, domain: 'localhost', path: '/' }])
 
   await page.goto('/clients')
   await page.click('button:has-text("Add client")')
