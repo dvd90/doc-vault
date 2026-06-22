@@ -1,9 +1,27 @@
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { loginUrl } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { MagicLinkForm } from '@/components/auth/magic-link-form'
 
-export default function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+async function isAuthenticated(): Promise<boolean> {
+  const token = cookies().get('token')?.value
+  if (!token) return false
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/auth/me`,
+      { headers: { Cookie: `token=${token}` }, cache: 'no-store' },
+    )
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
+export default async function LoginPage({ searchParams }: { searchParams: { error?: string } }) {
+  if (await isAuthenticated()) redirect('/dashboard')
+
   const errorMessage =
     searchParams.error === 'invalid_link'
       ? 'That sign-in link is invalid or has expired. Request a new one below.'

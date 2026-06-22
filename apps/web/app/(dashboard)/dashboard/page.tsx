@@ -1,7 +1,8 @@
 import { cookies } from 'next/headers'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, Clock, CheckCircle, AlertCircle } from 'lucide-react'
+import { Users, Clock, CheckCircle, AlertCircle, Plus } from 'lucide-react'
+import { RecentClientsTable } from './recent-clients-table'
+import { OnboardingSteps } from './onboarding-steps'
 
 interface Stats {
   total: number
@@ -10,71 +11,109 @@ interface Stats {
   complete: number
 }
 
-async function getStats(): Promise<Stats> {
-  const cookieStore = cookies()
-  const token = cookieStore.get('token')?.value
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'}/dashboard/stats`,
-    {
-      headers: { Cookie: `token=${token}` },
-      cache: 'no-store',
-    },
-  )
-  if (!res.ok) return { total: 0, notStarted: 0, inProgress: 0, complete: 0 }
-  return res.json()
+interface Client {
+  id: string
+  name: string
+  email: string
+  taxYear: string
+  status: string
+  createdAt: string
+}
+
+async function getDashboardData() {
+  const token = cookies().get('token')?.value
+  const headers = { Cookie: `token=${token}` }
+  const base = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000'
+
+  const [statsRes, clientsRes] = await Promise.all([
+    fetch(`${base}/dashboard/stats`, { headers, cache: 'no-store' }),
+    fetch(`${base}/clients`, { headers, cache: 'no-store' }),
+  ])
+
+  const stats: Stats = statsRes.ok
+    ? await statsRes.json()
+    : { total: 0, notStarted: 0, inProgress: 0, complete: 0 }
+
+  const clients: Client[] = clientsRes.ok ? await clientsRes.json() : []
+
+  return { stats, recentClients: clients.slice(0, 8) }
 }
 
 export default async function DashboardPage() {
-  const stats = await getStats()
+  const { stats, recentClients } = await getDashboardData()
+
+  const today = new Date().toLocaleDateString('en-GB', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your client document collection</p>
-      </div>
-
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          icon={<Users className="h-5 w-5 text-blue-600" />}
-          label="Total Clients"
-          value={stats.total}
-          bg="bg-blue-50"
-        />
-        <StatCard
-          icon={<AlertCircle className="h-5 w-5 text-gray-500" />}
-          label="Not Started"
-          value={stats.notStarted}
-          bg="bg-gray-50"
-        />
-        <StatCard
-          icon={<Clock className="h-5 w-5 text-yellow-600" />}
-          label="In Progress"
-          value={stats.inProgress}
-          bg="bg-yellow-50"
-        />
-        <StatCard
-          icon={<CheckCircle className="h-5 w-5 text-green-600" />}
-          label="Complete"
-          value={stats.complete}
-          bg="bg-green-50"
-        />
-      </div>
-
-      <div className="flex gap-4">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
+        </div>
         <Link
           href="/clients"
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         >
-          <Users className="h-4 w-4" /> View all clients
-        </Link>
-        <Link
-          href="/clients?new=1"
-          className="inline-flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
-        >
-          + Add client
+          <Plus className="h-4 w-4" />
+          Add client
         </Link>
       </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          icon={<Users className="h-4 w-4" />}
+          label="Total clients"
+          value={stats.total}
+          color="text-blue-600"
+          border="border-l-blue-500"
+        />
+        <StatCard
+          icon={<AlertCircle className="h-4 w-4" />}
+          label="Not started"
+          value={stats.notStarted}
+          color="text-slate-500"
+          border="border-l-slate-300"
+        />
+        <StatCard
+          icon={<Clock className="h-4 w-4" />}
+          label="In progress"
+          value={stats.inProgress}
+          color="text-amber-600"
+          border="border-l-amber-400"
+        />
+        <StatCard
+          icon={<CheckCircle className="h-4 w-4" />}
+          label="Complete"
+          value={stats.complete}
+          color="text-emerald-600"
+          border="border-l-emerald-500"
+        />
+      </div>
+
+      {/* Recent clients / Onboarding */}
+      {stats.total === 0 ? (
+        <OnboardingSteps />
+      ) : (
+        <div className="rounded-xl border bg-white">
+          <div className="flex items-center justify-between px-5 py-4 border-b">
+            <h2 className="text-sm font-semibold">Recent clients</h2>
+            <Link href="/clients" className="text-xs font-medium text-primary hover:underline">
+              View all
+            </Link>
+          </div>
+          <div className="px-5 pb-2">
+            <RecentClientsTable clients={recentClients} />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -83,22 +122,22 @@ function StatCard({
   icon,
   label,
   value,
-  bg,
+  color,
+  border,
 }: {
   icon: React.ReactNode
   label: string
   value: number
-  bg: string
+  color: string
+  border: string
 }) {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className={`w-9 h-9 rounded-full ${bg} flex items-center justify-center`}>{icon}</div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold">{value}</div>
-        <CardTitle className="text-sm font-medium text-muted-foreground mt-1">{label}</CardTitle>
-      </CardContent>
-    </Card>
+    <div className={`rounded-xl border-l-4 border border-slate-100 bg-white px-5 py-4 ${border}`}>
+      <div className={`flex items-center gap-1.5 text-xs font-medium mb-2 ${color}`}>
+        {icon}
+        {label}
+      </div>
+      <div className="text-3xl font-bold tracking-tight text-slate-900">{value}</div>
+    </div>
   )
 }

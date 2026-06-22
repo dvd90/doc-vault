@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -33,6 +34,7 @@ const STATUS_VARIANT: Record<string, 'outline' | 'warning' | 'success'> = {
 }
 
 export function ClientsView({ initialClients }: { initialClients: Client[] }) {
+  const router = useRouter()
   const [clients, setClients] = useState(initialClients)
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', taxYear: '' })
@@ -43,10 +45,8 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
     setSaving(true)
     try {
       const created = await api.post<Client>('/clients', form)
-      setClients((prev) => [...prev, created])
-      setOpen(false)
-      setForm({ name: '', email: '', taxYear: '' })
       toast({ title: 'Client created' })
+      router.push(`/clients/${created.id}`)
     } catch {
       toast({ title: 'Failed to create client', variant: 'destructive' })
     } finally {
