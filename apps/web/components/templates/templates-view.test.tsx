@@ -22,7 +22,7 @@ const mockTemplates = [
 ]
 
 describe('TemplatesView', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => { vi.clearAllMocks() })
 
   it('shows empty state when no templates', () => {
     render(<TemplatesView initialTemplates={[]} />)
