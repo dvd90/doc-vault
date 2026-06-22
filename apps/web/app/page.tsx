@@ -17,8 +17,6 @@ import {
   Users,
   Zap,
 } from 'lucide-react'
-import { loginUrl } from '@/lib/auth'
-
 export const metadata = {
   title: 'DocVault — Collect client documents without the chase',
   description:
@@ -26,7 +24,7 @@ export const metadata = {
 }
 
 export default function LandingPage() {
-  const signup = loginUrl()
+  const signup = '/login'
   return (
     <div className="min-h-screen bg-white text-slate-900 antialiased">
       <Nav signup={signup} />
