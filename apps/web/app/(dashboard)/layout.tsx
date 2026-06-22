@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { getMe } from '@/lib/auth'
-import { LayoutDashboard, Users, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, Settings, LogOut } from 'lucide-react'
 
 async function getSession() {
   // In SSR, we can't directly call the API with cookies from the browser.
@@ -46,6 +46,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </NavLink>
           <NavLink href="/clients" icon={<Users className="h-4 w-4" />}>
             Clients
+          </NavLink>
+          <NavLink href="/templates" icon={<FileText className="h-4 w-4" />}>
+            Templates
           </NavLink>
           <NavLink href="/settings" icon={<Settings className="h-4 w-4" />}>
             Settings
