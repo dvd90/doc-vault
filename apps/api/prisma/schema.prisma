@@ -42,24 +42,28 @@ model Firm {
   users              User[]
   clients            Client[]
   templates          ChecklistTemplate[]
+  webhookEndpoints   WebhookEndpoint[]
   createdAt          DateTime            @default(now()) @map("created_at")
 
   @@map("firms")
 }
 
 model Client {
-  id          String          @id @default(uuid())
-  firmId      String          @map("firm_id")
-  firm        Firm            @relation(fields: [firmId], references: [id])
-  name        String
-  email       String
-  taxYear     String          @map("tax_year")
-  portalToken String          @unique @default(uuid()) @map("portal_token")
-  status      String          @default("not_started")
-  archived    Boolean         @default(false)
-  items       ChecklistItem[]
-  createdAt   DateTime        @default(now()) @map("created_at")
-  updatedAt   DateTime        @updatedAt @map("updated_at")
+  id               String          @id @default(uuid())
+  firmId           String          @map("firm_id")
+  firm             Firm            @relation(fields: [firmId], references: [id])
+  name             String
+  email            String
+  taxYear          String          @map("tax_year")
+  portalToken      String          @unique @default(uuid()) @map("portal_token")
+  portalExpiresAt  DateTime?       @map("portal_expires_at")
+  status           String          @default("not_started")
+  archived         Boolean         @default(false)
+  internalNotes    String?         @map("internal_notes")
+  deadline         DateTime?
+  items            ChecklistItem[]
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
 
   @@map("clients")
 }
@@ -88,17 +92,30 @@ model ChecklistTemplateItem {
 }
 
 model ChecklistItem {
-  id          String    @id @default(uuid())
-  clientId    String    @map("client_id")
-  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  label       String
-  description String?
-  required    Boolean   @default(true)
-  sortOrder   Int       @default(0) @map("sort_order")
-  completedAt DateTime? @map("completed_at")
-  uploads     Upload[]
+  id           String    @id @default(uuid())
+  clientId     String    @map("client_id")
+  client       Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  label        String
+  description  String?
+  required     Boolean   @default(true)
+  sortOrder    Int       @default(0) @map("sort_order")
+  completedAt  DateTime? @map("completed_at")
+  revisionNote String?   @map("revision_note")
+  uploads      Upload[]
 
   @@map("checklist_items")
+}
+
+model WebhookEndpoint {
+  id        String   @id @default(uuid())
+  firmId    String   @map("firm_id")
+  firm      Firm     @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  url       String
+  secret    String
+  events    String[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("webhook_endpoints")
 }
 
 model Upload {
