@@ -31,4 +31,17 @@ export const ClientService = {
     if (!existing) throw new NotFoundError('Client')
     return prisma.client.update({ where: { id }, data: { archived: true } })
   },
+
+  async autoArchiveCompleted(daysAfterCompletion: number) {
+    const threshold = new Date(Date.now() - daysAfterCompletion * 24 * 60 * 60 * 1000)
+    const result = await prisma.client.updateMany({
+      where: {
+        status: 'complete',
+        archived: false,
+        updatedAt: { lt: threshold },
+      },
+      data: { archived: true },
+    })
+    return result.count
+  },
 }

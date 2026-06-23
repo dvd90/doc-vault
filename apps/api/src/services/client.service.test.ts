@@ -109,4 +109,38 @@ describe('ClientService', () => {
       expect(still!.archived).toBe(true)
     })
   })
+
+  describe('autoArchiveCompleted', () => {
+    it('archives completed clients older than threshold', async () => {
+      const firm = await createTestFirm()
+      const old = await createTestClient(firm.id, { status: 'complete' })
+      await prisma.client.update({
+        where: { id: old.id },
+        data: { updatedAt: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000) },
+      })
+      const count = await ClientService.autoArchiveCompleted(30)
+      expect(count).toBeGreaterThanOrEqual(1)
+      const updated = await prisma.client.findUniqueOrThrow({ where: { id: old.id } })
+      expect(updated.archived).toBe(true)
+    })
+    it('does not archive clients updated recently', async () => {
+      const firm = await createTestFirm()
+      const recent = await createTestClient(firm.id, { status: 'complete' })
+      const count = await ClientService.autoArchiveCompleted(30)
+      expect(count).toBe(0)
+      const updated = await prisma.client.findUniqueOrThrow({ where: { id: recent.id } })
+      expect(updated.archived).toBe(false)
+    })
+    it('does not archive non-complete clients', async () => {
+      const firm = await createTestFirm()
+      const inProgress = await createTestClient(firm.id, { status: 'in_progress' })
+      await prisma.client.update({
+        where: { id: inProgress.id },
+        data: { updatedAt: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000) },
+      })
+      await ClientService.autoArchiveCompleted(30)
+      const updated = await prisma.client.findUniqueOrThrow({ where: { id: inProgress.id } })
+      expect(updated.archived).toBe(false)
+    })
+  })
 })

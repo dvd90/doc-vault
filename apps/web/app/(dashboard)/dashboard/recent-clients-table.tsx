@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
 
 interface Client {
   id: string
@@ -34,26 +33,33 @@ export function RecentClientsTable({ clients }: { clients: Client[] }) {
   return (
     <div className="divide-y">
       {clients.map((c) => (
-        <div key={c.id} className="flex items-center justify-between py-3 px-1">
-          <div className="min-w-0">
+        <div key={c.id} className="flex items-center gap-2 py-3 px-1">
+          {/* Name + meta */}
+          <div className="min-w-0 flex-1">
             <p className="truncate font-medium text-sm">{c.name}</p>
             <p className="text-xs text-muted-foreground truncate">
-              {c.email} · {c.taxYear}
+              <span className="hidden sm:inline">{c.email} · </span>
+              {c.taxYear}
             </p>
           </div>
-          <div className="flex items-center gap-3 ml-4 shrink-0">
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? 'bg-slate-100 text-slate-600'}`}
-            >
-              {STATUS_LABELS[c.status] ?? c.status}
+
+          {/* Badge */}
+          <span
+            className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? 'bg-slate-100 text-slate-600'}`}
+          >
+            <span className="hidden xs:inline">{STATUS_LABELS[c.status] ?? c.status}</span>
+            <span className="xs:hidden">
+              {c.status === 'complete' ? '✓' : c.status === 'in_progress' ? '…' : '—'}
             </span>
-            <Link
-              href={`/clients/${c.id}`}
-              className="text-xs font-medium text-primary hover:underline"
-            >
-              View
-            </Link>
-          </div>
+          </span>
+
+          {/* View link */}
+          <Link
+            href={`/clients/${c.id}`}
+            className="shrink-0 text-xs font-medium text-primary hover:underline"
+          >
+            View
+          </Link>
         </div>
       ))}
     </div>

@@ -52,14 +52,14 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
         </div>
         <Link
           href="/clients"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+          className="inline-flex h-9 w-full sm:w-auto items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           <Plus className="h-4 w-4" />
           Add client
@@ -67,7 +67,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard
           icon={<Users className="h-4 w-4" />}
           label="Total clients"
@@ -103,13 +103,13 @@ export default async function DashboardPage() {
         <OnboardingSteps />
       ) : (
         <div className="rounded-xl border bg-white">
-          <div className="flex items-center justify-between px-5 py-4 border-b">
+          <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b">
             <h2 className="text-sm font-semibold">Recent clients</h2>
             <Link href="/clients" className="text-xs font-medium text-primary hover:underline">
               View all
             </Link>
           </div>
-          <div className="px-5 pb-2">
+          <div className="px-2 sm:px-5 pb-2">
             <RecentClientsTable clients={recentClients} />
           </div>
         </div>
@@ -132,12 +132,14 @@ function StatCard({
   border: string
 }) {
   return (
-    <div className={`rounded-xl border-l-4 border border-slate-100 bg-white px-5 py-4 ${border}`}>
-      <div className={`flex items-center gap-1.5 text-xs font-medium mb-2 ${color}`}>
+    <div
+      className={`rounded-xl border-l-4 border border-slate-100 bg-white px-4 py-3 sm:px-5 sm:py-4 ${border}`}
+    >
+      <div className={`flex items-center gap-1.5 text-xs font-medium mb-1.5 sm:mb-2 ${color}`}>
         {icon}
-        {label}
+        <span className="truncate">{label}</span>
       </div>
-      <div className="text-3xl font-bold tracking-tight text-slate-900">{value}</div>
+      <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">{value}</div>
     </div>
   )
 }

@@ -36,6 +36,20 @@ describe('GET /portal/:token', () => {
     const client = await createTestClient(firm.id, { archived: true })
     expect((await api.get(`/portal/${client.portalToken}`)).status).toBe(404)
   })
+  it('returns 404 for expired portal link', async () => {
+    const firm = await createTestFirm()
+    const client = await createTestClient(firm.id, {
+      portalExpiresAt: new Date(Date.now() - 1000),
+    })
+    expect((await api.get(`/portal/${client.portalToken}`)).status).toBe(404)
+  })
+  it('returns 200 for non-expired portal link', async () => {
+    const firm = await createTestFirm()
+    const client = await createTestClient(firm.id, {
+      portalExpiresAt: new Date(Date.now() + 60000),
+    })
+    expect((await api.get(`/portal/${client.portalToken}`)).status).toBe(200)
+  })
 })
 
 describe('POST /portal/:token/upload/:itemId', () => {

@@ -94,4 +94,34 @@ describe('NotificationService', () => {
       expect(call.html).toContain('/auth/magic-link/callback?token=tok-xyz')
     })
   })
+
+  describe('sendRevisionRequest', () => {
+    it('sends email to client with note', async () => {
+      const { resend } = await import('../lib/resend')
+      const firm = await createTestFirm()
+      const client = await createTestClient(firm.id, { email: 'bob@client.com' })
+      const item = await createTestChecklistItem(client.id, { label: 'P60' })
+      await NotificationService.sendRevisionRequest(item.id, 'Please re-upload clearer copy')
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({ to: 'bob@client.com' }),
+      )
+      const call = (resend.emails.send as ReturnType<typeof vi.fn>).mock.calls.at(-1)[0]
+      expect(call.html).toContain('Please re-upload clearer copy')
+      expect(call.html).toContain(client.portalToken)
+    })
+  })
+
+  describe('sendWeeklyDigest', () => {
+    it('sends digest email to firm users', async () => {
+      const { resend } = await import('../lib/resend')
+      const firm = await createTestFirm({ name: 'Digest Firm' })
+      await createTestUser(firm.id, { email: 'accountant@firm.com' })
+      await NotificationService.sendWeeklyDigest(firm.id)
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({ to: 'accountant@firm.com' }),
+      )
+      const call = (resend.emails.send as ReturnType<typeof vi.fn>).mock.calls.at(-1)[0]
+      expect(call.html).toContain('Digest Firm')
+    })
+  })
 })

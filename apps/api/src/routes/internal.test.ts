@@ -94,3 +94,29 @@ describe('GET /internal/admin/firms/:id', () => {
     expect(res.body.clients[0].items[0].uploads[0].filename).toBe('p60.pdf')
   })
 })
+
+describe('POST /internal/digest/send', () => {
+  it('returns 401 without cron secret', async () => {
+    expect((await api.post('/internal/digest/send')).status).toBe(401)
+  })
+  it('returns 200 with sent count', async () => {
+    const firm = await createTestFirm()
+    await createTestUser(firm.id)
+    process.env.CRON_SECRET = 'test-cron-secret'
+    const res = await api.post('/internal/digest/send').set('x-cron-secret', 'test-cron-secret')
+    expect(res.status).toBe(200)
+    expect(typeof res.body.sent).toBe('number')
+  })
+})
+
+describe('POST /internal/auto-archive', () => {
+  it('returns 401 without cron secret', async () => {
+    expect((await api.post('/internal/auto-archive')).status).toBe(401)
+  })
+  it('returns 200 with archived count', async () => {
+    process.env.CRON_SECRET = 'test-cron-secret'
+    const res = await api.post('/internal/auto-archive').set('x-cron-secret', 'test-cron-secret')
+    expect(res.status).toBe(200)
+    expect(typeof res.body.archived).toBe('number')
+  })
+})

@@ -1,6 +1,7 @@
 import { prisma } from '../lib/prisma'
 
 beforeEach(async () => {
+  await prisma.webhookEndpoint.deleteMany()
   await prisma.upload.deleteMany()
   await prisma.checklistItem.deleteMany()
   await prisma.checklistTemplateItem.deleteMany()

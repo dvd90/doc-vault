@@ -13,6 +13,8 @@ import { billingRouter } from './routes/billing'
 import { dashboardRouter } from './routes/dashboard'
 import { firmsRouter } from './routes/firms'
 import { internalRouter } from './routes/internal'
+import { uploadsRouter } from './routes/uploads'
+import { webhooksRouter } from './routes/webhooks'
 import { errorHandler } from './middleware/errorHandler'
 import { requireAuth } from './middleware/requireAuth'
 import { requireSub } from './middleware/requireSub'
@@ -43,6 +45,8 @@ app.use('/billing', billingRouter)
 app.use('/dashboard', dashboardRouter)
 app.use('/firms', firmsRouter)
 app.use('/internal', internalRouter)
+app.use('/uploads', uploadsRouter)
+app.use('/webhooks', webhooksRouter)
 
 if (process.env.NODE_ENV === 'test') {
   app.get('/test/protected', requireAuth, (req, res) => res.json(req.user))

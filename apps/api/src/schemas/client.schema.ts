@@ -12,6 +12,9 @@ export const updateClientSchema = z
     email: z.string().email().optional(),
     taxYear: z.string().min(1).optional(),
     status: z.string().optional(),
+    internalNotes: z.string().optional(),
+    deadline: z.string().datetime().optional().nullable(),
+    portalExpiresAt: z.string().datetime().optional().nullable(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'At least one field required' })
 
