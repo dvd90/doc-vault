@@ -769,7 +769,7 @@ describe('GET /health', () => {
 
 **Verify:** `npm test` → 1 passing.
 
-- [ ] Task 1.1 complete
+- [x] Task 1.1 complete
 
 ---
 
@@ -841,7 +841,7 @@ describe('database connectivity', () => {
 })
 ```
 
-- [ ] Task 1.2 complete
+- [x] Task 1.2 complete
 
 ---
 
@@ -899,7 +899,7 @@ describe('validate middleware', () => {
 })
 ```
 
-- [ ] Task 1.3a complete
+- [x] Task 1.3a complete
 
 ### Task 1.3b — requireAuth middleware
 
@@ -947,7 +947,7 @@ describe('requireAuth', () => {
 })
 ```
 
-- [ ] Task 1.3b complete
+- [x] Task 1.3b complete
 
 ### Task 1.3c — requireSub middleware
 
@@ -990,7 +990,7 @@ describe('requireSub', () => {
 })
 ```
 
-- [ ] Task 1.3c complete
+- [x] Task 1.3c complete
 
 ---
 
@@ -1048,7 +1048,7 @@ describe('AuthService.findOrCreateUser', () => {
 })
 ```
 
-- [ ] Task 1.4a complete
+- [x] Task 1.4a complete
 
 ### Task 1.4b — Auth routes
 
@@ -1088,7 +1088,7 @@ describe('POST /auth/logout', () => {
 })
 ```
 
-- [ ] Task 1.4b complete
+- [x] Task 1.4b complete
 
 ---
 
@@ -1138,7 +1138,7 @@ describe('updateClientSchema', () => {
 })
 ```
 
-- [ ] Task 1.5a complete
+- [x] Task 1.5a complete
 
 ### Task 1.5b — ClientService
 
@@ -1258,7 +1258,7 @@ describe('ClientService', () => {
 })
 ```
 
-- [ ] Task 1.5b complete
+- [x] Task 1.5b complete
 
 ### Task 1.5c — Client routes (integration)
 
@@ -1377,7 +1377,7 @@ describe('DELETE /clients/:id', () => {
 })
 ```
 
-- [ ] Task 1.5c complete
+- [x] Task 1.5c complete
 
 ---
 
@@ -1453,7 +1453,7 @@ describe('BillingService', () => {
 })
 ```
 
-- [ ] Task 1.6a complete
+- [x] Task 1.6a complete
 
 ### Task 1.6b — Billing routes
 
@@ -1495,17 +1495,17 @@ describe('POST /billing/webhook', () => {
 
 **Important:** The `/billing/webhook` route must use `express.raw({ type: 'application/json' })` as its body parser — not `express.json()`. Stripe signature verification will fail otherwise. Mount it before the global `express.json()` middleware.
 
-- [ ] Task 1.6b complete
+- [x] Task 1.6b complete
 
 ---
 
 **PHASE 1 DONE WHEN:**
 
-- [ ] All task checkboxes above ticked
-- [ ] `npm test` — all tests green
-- [ ] `npm run test:coverage` — Lines ≥ 80%, Functions ≥ 80%, Branches ≥ 70%
-- [ ] Google sign-in works end-to-end in browser
-- [ ] Client CRUD verified via manual curl or Insomnia
+- [x] All task checkboxes above ticked
+- [x] `npm test` — all tests green
+- [x] `npm run test:coverage` — Lines ≥ 80%, Functions ≥ 80%, Branches ≥ 70%
+- [x] Google sign-in works end-to-end in browser
+- [x] Client CRUD verified via manual curl or Insomnia
 
 ---
 
@@ -1550,7 +1550,7 @@ describe('createTemplateSchema', () => {
 })
 ```
 
-- [ ] Task 2.1a complete
+- [x] Task 2.1a complete
 
 ### Task 2.1b — ChecklistService
 
@@ -1648,7 +1648,7 @@ describe('ChecklistService', () => {
 })
 ```
 
-- [ ] Task 2.1b complete
+- [x] Task 2.1b complete
 
 ### Task 2.1c — Template routes
 
@@ -1729,7 +1729,7 @@ describe('POST /clients/:id/apply-template', () => {
 })
 ```
 
-- [ ] Task 2.1c complete
+- [x] Task 2.1c complete
 
 ---
 
@@ -1794,7 +1794,7 @@ describe('UploadService', () => {
 })
 ```
 
-- [ ] Task 2.2 complete
+- [x] Task 2.2 complete
 
 ---
 
@@ -1865,7 +1865,7 @@ describe('NotificationService', () => {
 })
 ```
 
-- [ ] Task 2.3 complete
+- [x] Task 2.3 complete
 
 ---
 
@@ -1948,18 +1948,18 @@ describe('POST /portal/:token/upload/:itemId', () => {
 })
 ```
 
-- [ ] Task 2.4 complete
+- [x] Task 2.4 complete
 
 ---
 
 **PHASE 2 DONE WHEN:**
 
-- [ ] All task checkboxes above ticked
-- [ ] `npm test` — all tests green
-- [ ] `npm run test:coverage` — all thresholds pass
-- [ ] Portal loads at `/portal/:token` in browser without login
-- [ ] File upload to S3 verified (use a real test bucket or localstack)
-- [ ] Invite email arrives in a real inbox (use Resend test mode)
+- [x] All task checkboxes above ticked
+- [x] `npm test` — all tests green
+- [x] `npm run test:coverage` — all thresholds pass
+- [x] Portal loads at `/portal/:token` in browser without login
+- [x] File upload to S3 verified (use a real test bucket or localstack)
+- [x] Invite email arrives in a real inbox (use Resend test mode)
 
 ---
 
@@ -2052,7 +2052,7 @@ describe('POST /internal/reminders/send', () => {
 })
 ```
 
-- [ ] Task 3.1 complete
+- [x] Task 3.1 complete
 
 ---
 
@@ -2092,7 +2092,7 @@ describe('GET /dashboard/stats', () => {
 })
 ```
 
-- [ ] Task 3.2 complete
+- [x] Task 3.2 complete
 
 ---
 
@@ -2159,7 +2159,7 @@ describe('POST /firms/me/logo', () => {
 })
 ```
 
-- [ ] Task 3.3 complete
+- [x] Task 3.3 complete
 
 ---
 
@@ -2217,16 +2217,16 @@ test('completion screen appears after all required uploads', async ({ page }) =>
 
 **Note:** Google OAuth cannot be fully automated. Add a test-only route `POST /test/seed-user` (guarded by `NODE_ENV === 'test'`) that creates a user + firm, signs a JWT, and returns a redirect URL that sets the cookie. Use this in e2e tests instead of real OAuth.
 
-- [ ] Task 3.4 complete
+- [x] Task 3.4 complete
 
 ---
 
 **PHASE 3 DONE WHEN:**
 
-- [ ] All task checkboxes above ticked
-- [ ] `npm test` — all tests green
-- [ ] `npm run test:coverage` — all thresholds pass
-- [ ] `npm run test:e2e` — all Playwright tests pass
+- [x] All task checkboxes above ticked
+- [x] `npm test` — all tests green
+- [x] `npm run test:coverage` — all thresholds pass
+- [x] `npm run test:e2e` — all Playwright tests pass
 
 ---
 
