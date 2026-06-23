@@ -35,4 +35,13 @@ describe('updateClientSchema', () => {
   it('rejects empty object', () => {
     expect(updateClientSchema.safeParse({}).success).toBe(false)
   })
+  it('accepts internalNotes update', () => {
+    expect(updateClientSchema.safeParse({ internalNotes: 'Called twice' }).success).toBe(true)
+  })
+  it('accepts deadline update', () => {
+    expect(updateClientSchema.safeParse({ deadline: new Date().toISOString() }).success).toBe(true)
+  })
+  it('accepts null deadline to clear it', () => {
+    expect(updateClientSchema.safeParse({ deadline: null }).success).toBe(true)
+  })
 })

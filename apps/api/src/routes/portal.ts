@@ -32,8 +32,18 @@ portalRouter.get('/:token', async (req, res, next) => {
     })
     if (!client) throw new NotFoundError('Portal')
 
+    if (client.portalExpiresAt && client.portalExpiresAt < new Date()) {
+      throw new NotFoundError('Portal')
+    }
+
     res.json({
-      client: { id: client.id, name: client.name, status: client.status },
+      client: {
+        id: client.id,
+        name: client.name,
+        status: client.status,
+        deadline: client.deadline,
+        portalExpiresAt: client.portalExpiresAt,
+      },
       firm: {
         name: client.firm.name,
         accentColor: client.firm.accentColor,

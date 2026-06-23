@@ -1,5 +1,7 @@
 import { Router } from 'express'
 import { ReminderService } from '../services/reminder.service'
+import { NotificationService } from '../services/notification.service'
+import { ClientService } from '../services/client.service'
 import { prisma } from '../lib/prisma'
 
 export const internalRouter = Router()
@@ -13,6 +15,48 @@ internalRouter.post('/reminders/send', async (req, res, next) => {
   try {
     const sent = await ReminderService.sendPendingReminders()
     res.json({ sent })
+  } catch (err) {
+    next(err)
+  }
+})
+
+internalRouter.post('/digest/send', async (req, res, next) => {
+  const secret = req.headers['x-cron-secret']
+  if (!secret || secret !== process.env.CRON_SECRET) {
+    return res.status(401).json({ code: 'UNAUTHORIZED', message: 'Invalid cron secret' })
+  }
+
+  try {
+    const firms = await prisma.firm.findMany({
+      where: { users: { some: {} } },
+      select: { id: true },
+    })
+
+    let sent = 0
+    for (const firm of firms) {
+      try {
+        await NotificationService.sendWeeklyDigest(firm.id)
+        sent++
+      } catch {
+        // skip failing firms
+      }
+    }
+
+    res.json({ sent })
+  } catch (err) {
+    next(err)
+  }
+})
+
+internalRouter.post('/auto-archive', async (req, res, next) => {
+  const secret = req.headers['x-cron-secret']
+  if (!secret || secret !== process.env.CRON_SECRET) {
+    return res.status(401).json({ code: 'UNAUTHORIZED', message: 'Invalid cron secret' })
+  }
+
+  try {
+    const archived = await ClientService.autoArchiveCompleted(30)
+    res.json({ archived })
   } catch (err) {
     next(err)
   }
