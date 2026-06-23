@@ -67,14 +67,14 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Clients</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-bold">Clients</h1>
+          <p className="text-muted-foreground text-sm">
             {clients.length} active client{clients.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button onClick={() => setOpen(true)} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> Add client
         </Button>
       </div>
@@ -94,17 +94,21 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
         <div className="space-y-2">
           {clients.map((client) => (
             <Card key={client.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-center justify-between py-4">
+              <CardContent className="flex items-center gap-3 py-4 px-4">
                 <Link href={`/clients/${client.id}`} className="flex-1 min-w-0">
-                  <div className="font-medium">{client.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {client.email} · {client.taxYear}
+                  <div className="font-medium text-sm sm:text-base">{client.name}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground truncate">
+                    <span className="hidden sm:inline">{client.email} · </span>
+                    {client.taxYear}
                   </div>
                 </Link>
-                <div className="flex items-center gap-3">
-                  <Badge variant={STATUS_VARIANT[client.status] ?? 'outline'}>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant={STATUS_VARIANT[client.status] ?? 'outline'} className="hidden xs:inline-flex">
                     {STATUS_LABELS[client.status] ?? client.status}
                   </Badge>
+                  <span className="xs:hidden text-xs text-muted-foreground">
+                    {client.status === 'complete' ? '✓' : client.status === 'in_progress' ? '…' : '—'}
+                  </span>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(client.id)}>
                     <Trash2 className="h-4 w-4 text-muted-foreground" />
                   </Button>

@@ -105,22 +105,22 @@ export function ClientDetailView({
         >
           <ArrowLeft className="h-3 w-3" /> All clients
         </Link>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">{client.name}</h1>
-            <p className="text-muted-foreground">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{client.name}</h1>
+            <p className="text-sm text-muted-foreground truncate">
               {client.email} · Tax year {client.taxYear}
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={copyPortalLink}>
-              <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy portal link
+          <div className="flex flex-wrap gap-2 shrink-0">
+            <Button variant="outline" size="sm" onClick={copyPortalLink} className="flex-1 sm:flex-none">
+              <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy link
             </Button>
-            <Button variant="outline" size="sm" onClick={handleRemind} disabled={reminding}>
+            <Button variant="outline" size="sm" onClick={handleRemind} disabled={reminding} className="flex-1 sm:flex-none">
               <Bell className="h-3.5 w-3.5 mr-1.5" />
               {reminding ? 'Sending…' : 'Remind'}
             </Button>
-            <Button size="sm" onClick={handleInvite} disabled={sending}>
+            <Button size="sm" onClick={handleInvite} disabled={sending} className="flex-1 sm:flex-none">
               <Send className="h-3.5 w-3.5 mr-1.5" />
               {sending ? 'Sending…' : 'Send invite'}
             </Button>
@@ -128,8 +128,8 @@ export function ClientDetailView({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="lg:col-span-2 space-y-4">
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
