@@ -87,10 +87,22 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Mobile bottom nav */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t flex">
-          <MobileNavLink href="/dashboard" icon={<LayoutDashboard className="h-5 w-5" />} label="Dashboard" />
+          <MobileNavLink
+            href="/dashboard"
+            icon={<LayoutDashboard className="h-5 w-5" />}
+            label="Dashboard"
+          />
           <MobileNavLink href="/clients" icon={<Users className="h-5 w-5" />} label="Clients" />
-          <MobileNavLink href="/templates" icon={<FileText className="h-5 w-5" />} label="Templates" />
-          <MobileNavLink href="/settings" icon={<Settings className="h-5 w-5" />} label="Settings" />
+          <MobileNavLink
+            href="/templates"
+            icon={<FileText className="h-5 w-5" />}
+            label="Templates"
+          />
+          <MobileNavLink
+            href="/settings"
+            icon={<Settings className="h-5 w-5" />}
+            label="Settings"
+          />
         </nav>
       </div>
     </div>

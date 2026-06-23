@@ -132,7 +132,9 @@ function StatCard({
   border: string
 }) {
   return (
-    <div className={`rounded-xl border-l-4 border border-slate-100 bg-white px-4 py-3 sm:px-5 sm:py-4 ${border}`}>
+    <div
+      className={`rounded-xl border-l-4 border border-slate-100 bg-white px-4 py-3 sm:px-5 sm:py-4 ${border}`}
+    >
       <div className={`flex items-center gap-1.5 text-xs font-medium mb-1.5 sm:mb-2 ${color}`}>
         {icon}
         <span className="truncate">{label}</span>

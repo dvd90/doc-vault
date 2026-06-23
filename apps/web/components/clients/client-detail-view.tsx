@@ -113,14 +113,30 @@ export function ClientDetailView({
             </p>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
-            <Button variant="outline" size="sm" onClick={copyPortalLink} className="flex-1 sm:flex-none">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyPortalLink}
+              className="flex-1 sm:flex-none"
+            >
               <Copy className="h-3.5 w-3.5 mr-1.5" /> Copy link
             </Button>
-            <Button variant="outline" size="sm" onClick={handleRemind} disabled={reminding} className="flex-1 sm:flex-none">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRemind}
+              disabled={reminding}
+              className="flex-1 sm:flex-none"
+            >
               <Bell className="h-3.5 w-3.5 mr-1.5" />
               {reminding ? 'Sending…' : 'Remind'}
             </Button>
-            <Button size="sm" onClick={handleInvite} disabled={sending} className="flex-1 sm:flex-none">
+            <Button
+              size="sm"
+              onClick={handleInvite}
+              disabled={sending}
+              className="flex-1 sm:flex-none"
+            >
               <Send className="h-3.5 w-3.5 mr-1.5" />
               {sending ? 'Sending…' : 'Send invite'}
             </Button>

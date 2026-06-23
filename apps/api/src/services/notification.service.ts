@@ -44,7 +44,9 @@ export const NotificationService = {
       html: `<p>${item.client.name} has uploaded "${item.label}".</p>`,
     })
 
-    WebhookService.fireWebhook(item.client.firmId, 'upload.received', { itemId: checklistItemId }).catch(() => undefined)
+    WebhookService.fireWebhook(item.client.firmId, 'upload.received', {
+      itemId: checklistItemId,
+    }).catch(() => undefined)
   },
 
   async sendChecklistComplete(clientId: string) {
@@ -63,7 +65,9 @@ export const NotificationService = {
       html: `<p>${client.name} has uploaded all required documents.</p>`,
     })
 
-    WebhookService.fireWebhook(client.firmId, 'checklist.complete', { clientId }).catch(() => undefined)
+    WebhookService.fireWebhook(client.firmId, 'checklist.complete', { clientId }).catch(
+      () => undefined,
+    )
   },
 
   async sendMagicLink(email: string, token: string) {

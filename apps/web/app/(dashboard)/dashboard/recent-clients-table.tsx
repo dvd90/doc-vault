@@ -47,9 +47,7 @@ export function RecentClientsTable({ clients }: { clients: Client[] }) {
           <span
             className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? 'bg-slate-100 text-slate-600'}`}
           >
-            <span className="hidden xs:inline">
-              {STATUS_LABELS[c.status] ?? c.status}
-            </span>
+            <span className="hidden xs:inline">{STATUS_LABELS[c.status] ?? c.status}</span>
             <span className="xs:hidden">
               {c.status === 'complete' ? '✓' : c.status === 'in_progress' ? '…' : '—'}
             </span>

@@ -308,9 +308,7 @@ describe('GET /clients/:id/download-zip', () => {
     const client = await createTestClient(firm.id)
     const item = await createTestChecklistItem(client.id)
     await createTestUpload(item.id)
-    const res = await makeAuthedRequest(user.id, firm.id).get(
-      `/clients/${client.id}/download-zip`,
-    )
+    const res = await makeAuthedRequest(user.id, firm.id).get(`/clients/${client.id}/download-zip`)
     expect(res.status).toBe(200)
     expect(res.headers['content-type']).toContain('application/zip')
   })

@@ -103,11 +103,18 @@ export function ClientsView({ initialClients }: { initialClients: Client[] }) {
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
-                  <Badge variant={STATUS_VARIANT[client.status] ?? 'outline'} className="hidden xs:inline-flex">
+                  <Badge
+                    variant={STATUS_VARIANT[client.status] ?? 'outline'}
+                    className="hidden xs:inline-flex"
+                  >
                     {STATUS_LABELS[client.status] ?? client.status}
                   </Badge>
                   <span className="xs:hidden text-xs text-muted-foreground">
-                    {client.status === 'complete' ? '✓' : client.status === 'in_progress' ? '…' : '—'}
+                    {client.status === 'complete'
+                      ? '✓'
+                      : client.status === 'in_progress'
+                        ? '…'
+                        : '—'}
                   </span>
                   <Button variant="ghost" size="icon" onClick={() => handleDelete(client.id)}>
                     <Trash2 className="h-4 w-4 text-muted-foreground" />

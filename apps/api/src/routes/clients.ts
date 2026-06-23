@@ -240,10 +240,7 @@ clientsRouter.get('/:id/download-zip', async (req, res, next) => {
     const archive = new ZipArchive({ zlib: { level: 9 } })
 
     res.setHeader('Content-Type', 'application/zip')
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="client-${client.name}-docs.zip"`,
-    )
+    res.setHeader('Content-Disposition', `attachment; filename="client-${client.name}-docs.zip"`)
 
     archive.pipe(res)
 

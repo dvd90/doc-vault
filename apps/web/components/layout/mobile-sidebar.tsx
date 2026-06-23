@@ -25,12 +25,7 @@ export function MobileSidebar({ userName }: { userName: string }) {
       </button>
 
       {/* Overlay */}
-      {open && (
-        <div
-          className="fixed inset-0 z-50 bg-black/40"
-          onClick={() => setOpen(false)}
-        />
-      )}
+      {open && <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setOpen(false)} />}
 
       {/* Slide-out drawer */}
       <div
